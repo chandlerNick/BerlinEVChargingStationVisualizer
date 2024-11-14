@@ -21,14 +21,14 @@ def main():
 
 
     # Load in the respective datasets
-    df_geodat_plz   = pd.read_csv(os.path.join(currentWorkingDirectory, 'datasets', 'geodata_berlin_plz.csv'), delimiter=';')  #
+    df_geodat_plz   = pd.read_csv(os.path.join(os.getcwd(), 'datasets', 'geodata_berlin_plz.csv'), delimiter=';')  #
     
-    df_lstat        = pd.read_csv(os.path.join(currentWorkingDirectory, 'datasets', 'Ladesaeulenregister.csv'), delimiter=';')
+    df_lstat        = pd.read_csv(os.path.join(os.getcwd(), 'datasets', 'Ladesaeulenregister.csv'), delimiter=';')
     df_lstat2       = m1.preprop_lstat(df_lstat, df_geodat_plz, pdict)
     gdf_lstat3      = m1.count_plz_occurrences(df_lstat2)
     
-    df_residents    = pd.read_csv(os.path.join(currentWorkingDirectory, 'datasets', 'plz_einwohner.csv'), delimiter=',')  #
-    os.path.join(currentWorkingDirectory, 'datasets', 'plz_einwohner.csv')
+    df_residents    = pd.read_csv(os.path.join(os.getcwd(), 'datasets', 'plz_einwohner.csv'), delimiter=',')  #
+
     gdf_residents2  = m1.preprop_resid(df_residents, df_geodat_plz, pdict)
     
     
