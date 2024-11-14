@@ -1,6 +1,5 @@
 
 #currentWorkingDirectory = "C:\\(...)\\project1"
-#currentWorkingDirectory = "/mnt/c/Users/njcha/OneDrive/BHT/Semester1/AdvancedSoftwareEngineering/BerlinEVChargingStationVisualizer/"
 
 # -----------------------------------------------------------------------------
 import os
