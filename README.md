@@ -42,18 +42,18 @@ Answer:
 Assuming we define demand as the ratio of population over number of charging stations with a high value indicating a high demand for charging stations, we can make the following quick deductions from the visualization:
 High demand PLZ were identified by looking at PLZ with a light yellow on the charging station map and medium lightness orange or darker on the population map, indicating few charging stations (<5) and medium to high population (>15000) respectively.
 Based on this creterion, PLZ with a high demand for EV stations are:
-    - 12559
-    - 13589
-    - 13439
-    - 13407
-    - 13059
-    - 13627
-    - 13351
-    - 13349
-    - 13359
-    - 13189
-    - 10318
-    - 14193
-    - 12277
-    - 12307
+- 12559
+- 13589
+- 13439
+- 13407
+- 13059
+- 13627
+- 13351
+- 13349
+- 13359
+- 13189
+- 10318
+- 14193
+- 12277
+- 12307
 
