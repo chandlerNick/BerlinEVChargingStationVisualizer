@@ -1,11 +1,11 @@
 
 #currentWorkingDirectory = "C:\\(...)\\project1"
-currentWorkingDirectory = "/mnt/c/Users/njcha/OneDrive/BHT/Semester1/AdvancedSoftwareEngineering/BerlinEVChargingStationVisualizer/"
+#currentWorkingDirectory = "/mnt/c/Users/njcha/OneDrive/BHT/Semester1/AdvancedSoftwareEngineering/BerlinEVChargingStationVisualizer/"
 
 # -----------------------------------------------------------------------------
 import os
-os.chdir(currentWorkingDirectory)
-print("Current working directory\n" + os.getcwd())
+
+
 
 import pandas                        as pd
 import geopandas as gpd
