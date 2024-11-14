@@ -7,7 +7,6 @@ import os
 
 
 import pandas                        as pd
-import geopandas as gpd
 from core import methods             as m1
 from core import HelperTools         as ht
 
