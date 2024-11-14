@@ -1,6 +1,4 @@
-Analysis of Geovisualization
-
-Question: Where do you see demand for additional electric charging stations?
+Analyze both geovisualizations: Where do you see demand for additional electric charging stations?
 
 Answer:
 Assuming we define demand as the ratio of population over number of charging stations with a high value indicating a high demand for charging stations, we can make the following quick deductions from the visualization:
