@@ -3,6 +3,8 @@ This repo houses a streamlit app that visualizes the distribution of EV charging
 
 https://berlinevdistributiongeovisualizer.streamlit.app/
 
+Google Doc: https://docs.google.com/document/d/1Nufz29A0aTRTqbKYzp88Gdk-rSo3kfsH87DRXjxQvao/edit?usp=sharing
+
 #### Code Documentation
 
 Program:
