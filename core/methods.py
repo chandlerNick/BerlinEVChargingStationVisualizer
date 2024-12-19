@@ -13,11 +13,26 @@ from pathlib import Path
 # Define the path to the suggestions file
 SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
+
+
+# Function to initialize the JSON file
+def initialize_file():
+    '''
+    Initializes the JSON file if it isn't already
+    '''
+    if not Path(SUGGESTIONS_FILE).exists():  # Check if the file exists
+        with open(SUGGESTIONS_FILE, "w") as file:
+            json.dump([], file)  # Create an empty list in the file
+
+# -----------------------------------------------------------------------
+
+
 # Function to load suggestions from the file
 def load_suggestions():
     '''
     Loads the suggestions from the json file at the specified path
     '''
+    initialize_file()
     if Path(SUGGESTIONS_FILE).exists():
         with open(SUGGESTIONS_FILE, "r") as file:
             return json.load(file)
@@ -32,7 +47,7 @@ def save_suggestions(suggestions):
     Save suggestions to the json file at the specified path
     Input: suggestions
     '''
-    with open(SUGGESTIONS_FILE, "w") as file:
+    with open(SUGGESTIONS_FILE, "w+") as file:
         json.dump(suggestions, file)
 
 
