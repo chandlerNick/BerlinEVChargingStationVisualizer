@@ -7,8 +7,36 @@ import folium
 import streamlit as st
 from streamlit_folium import folium_static
 from branca.colormap import LinearColormap
+import json
+from pathlib import Path
+
+# Define the path to the suggestions file
+SUGGESTIONS_FILE = "./../datasets/suggestions.json"
+
+# Function to load suggestions from the file
+def load_suggestions():
+    '''
+    Loads the suggestions from the json file at the specified path
+    '''
+    if Path(SUGGESTIONS_FILE).exists():
+        with open(SUGGESTIONS_FILE, "r") as file:
+            return json.load(file)
+    return []
+
+# -----------------------------------------------------------------------
+# Function to save suggestions to the file
 
 
+def save_suggestions(suggestions):
+    '''
+    Save suggestions to the json file at the specified path
+    Input: suggestions
+    '''
+    with open(SUGGESTIONS_FILE, "w") as file:
+        json.dump(suggestions, file)
+
+
+# -----------------------------------------------------------------------
 
 def sort_by_plz_add_geometry(dfr, dfg, pdict): 
     dframe                  = dfr.copy()
@@ -196,8 +224,6 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
             ).add_to(m)
         
-        
-        
     else:
         # Create a color map for Numbers
 
@@ -224,6 +250,39 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     color_map.add_to(m)
     
     folium_static(m, width=800, height=600)
+    
+    
+    # Load suggestions into memory
+    if "suggestions" not in st.session_state:
+        st.session_state["suggestions"] = load_suggestions()
+
+    # Sidebar menu
+    option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions"])
+
+    if option == "Submit a Suggestion":
+        st.header("Submit Your Suggestion")
+        
+        # Text input for the suggestion
+        suggestion = st.text_area("Write your suggestion here:")
+        
+        # Button to submit the suggestion
+        if st.button("Submit Suggestion"):
+            if suggestion.strip():  # Check if the suggestion is not empty
+                st.session_state["suggestions"].append(suggestion.strip())
+                save_suggestions(st.session_state["suggestions"])  # Save to file
+                st.success("Thank you for your suggestion!")
+            else:
+                st.warning("Suggestion cannot be empty.")
+
+    elif option == "View Suggestions":
+        st.header("Suggestions List")
+        
+        if st.session_state["suggestions"]:
+            # Display each suggestion
+            for i, suggestion in enumerate(st.session_state["suggestions"], 1):
+                st.write(f"{i}. {suggestion}")
+        else:
+            st.info("No suggestions have been submitted yet.")
     
     
 
