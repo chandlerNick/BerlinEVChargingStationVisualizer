@@ -149,7 +149,7 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     # Create a radio button for layer selection
     # layer_selection = st.radio("Select Layer", ("Number of Residents per PLZ (Postal code)", "Number of Charging Stations per PLZ (Postal code)"))
 
-    layer_selection = st.radio("Select Layer", ("Residents", "Charging_Stations"))
+    layer_selection = st.radio("Select Layer", ("Residents", "Charging_Stations", "Demand"))
 
     # Create a Folium map
     m = folium.Map(location=[52.52, 13.40], zoom_start=10)
@@ -176,6 +176,28 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         # st.subheader('Residents Data')
         # st.dataframe(gdf_residents2)
 
+    elif layer_selection == "Demand":
+        # Create a colormap for demand - read in both, for each bezirk, divide num stations by pop
+
+        # Calculate demand score
+        dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
+        
+        color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
+        
+        for idx, row in dframe2.iterrows():
+            folium.GeoJson(
+                row['geometry'],
+                style_function=lambda x, color=color_map(row['Demand']): {
+                    'fillColor': color,
+                    'color': 'black',
+                    'weight': 1,
+                    'fillOpacity': 0.7
+                },
+                tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
+            ).add_to(m)
+        
+        
+        
     else:
         # Create a color map for Numbers
 
