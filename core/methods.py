@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 # Define the path to the suggestions file
-SUGGESTIONS_FILE = "./../datasets/suggestions.json"
+SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
 # Function to load suggestions from the file
 def load_suggestions():
