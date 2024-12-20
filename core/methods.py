@@ -214,6 +214,8 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
 
     layer_selection = st.radio("Select Layer", ("Residents", "Charging_Stations", "Demand"))
 
+    demand = st.radio("Select Demand Function", ("Robert", "Luisa", "Default"))
+
     # Create a Folium map
     m = folium.Map(location=[52.52, 13.40], zoom_start=10)
 
@@ -242,14 +244,20 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     elif layer_selection == "Demand":
         # Create a colormap for demand - read in both, for each bezirk, divide num stations by pop
 
+        if demand == "Robert":
+            dframe2['Demand'] = robert_demands(dframe1['Number'], dframe2['Einwohner'])
+        elif demand == "Luisa":
+            dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
+        else:
+            dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
         # Original way
-        #dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
+        #
         
         # Luisa's way
-        # dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
+        # 
         
         # Robert's way
-        dframe2['Demand'] = robert_demands(dframe1['Number'], dframe2['Einwohner'])
+        
         
         color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
         
