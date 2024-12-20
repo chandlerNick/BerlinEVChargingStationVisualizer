@@ -24,13 +24,13 @@ def lusia_demands(dataframe_column_1, dataframe_column_2):
     x = dataframe_column_2.div(dataframe_column_1, fill_value=1)
     
     # Function per Luisa
-    return x / (5000 + x)
+    return round(x / (5000 + x), 3)
 
 # -----------------------------------------------------------------------
 
 # Robert's demand function
 def robert_demands(dataframe_column_1, dataframe_column_2):
-    return (0.01*dataframe_column_2/10).sub(dataframe_column_1, fill_value=0)
+    return round((0.01*dataframe_column_2/10).sub(dataframe_column_1, fill_value=0), 3)
 
 
 
