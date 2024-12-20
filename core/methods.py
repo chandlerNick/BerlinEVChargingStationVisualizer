@@ -253,8 +253,15 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         else:
             dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
         
-        
-        color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
+        if demand == "Robert":
+            mi = dframe2['Demand'].min()
+            ma = dframe2['Demand'].max()
+            fence = ma
+            if mi > ma: 
+                fence = mi
+            color_map = LinearColormap(colors=['yellow', 'red'], vmin=fence, vmax=fence)
+        else:
+            color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
         
         for idx, row in dframe2.iterrows():
             folium.GeoJson(
