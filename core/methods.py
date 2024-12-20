@@ -30,7 +30,7 @@ def lusia_demands(dataframe_column_1, dataframe_column_2):
 
 # Robert's demand function
 def robert_demands(dataframe_column_1, dataframe_column_2):
-    return round((0.01*dataframe_column_2/10).sub(dataframe_column_1, fill_value=0), 3)
+    return round((0.01*dataframe_column_2/10).sub(dataframe_column_1, fill_value=0), 0)
 
 
 
@@ -244,19 +244,14 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     elif layer_selection == "Demand":
         # Create a colormap for demand - read in both, for each bezirk, divide num stations by pop
 
+
+        # Implement Demand
         if demand == "Robert":
             dframe2['Demand'] = robert_demands(dframe1['Number'], dframe2['Einwohner'])
         elif demand == "Luisa":
             dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
         else:
             dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
-        # Original way
-        #
-        
-        # Luisa's way
-        # 
-        
-        # Robert's way
         
         
         color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
