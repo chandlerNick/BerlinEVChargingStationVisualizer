@@ -14,6 +14,26 @@ from pathlib import Path
 SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
 
+# Luisa's demand function
+def lusia_demands(dataframe_column_1, dataframe_column_2):
+    
+    # Update the number of stations to account for the fill value
+    dataframe_column_1 = dataframe_column_1 + 1
+    
+    # Divsion with fill value
+    x = dataframe_column_2.div(dataframe_column_1, fill_value=1)
+    
+    # Function per Luisa
+    return x / (5000 + x)
+
+# -----------------------------------------------------------------------
+
+# Robert's demand function
+def robert_demands(dataframe_column_1, dataframe_column_2):
+    return (0.01*dataframe_column_2/10).sub(dataframe_column_1, fill_value=0)
+
+
+
 
 # Function to initialize the JSON file
 def initialize_file():
@@ -222,8 +242,14 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     elif layer_selection == "Demand":
         # Create a colormap for demand - read in both, for each bezirk, divide num stations by pop
 
-        # Calculate demand score
-        dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
+        # Original way
+        #dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
+        
+        # Luisa's way
+        dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
+        
+        # Robert's way
+        # dframe2['Demand'] = robert_demands(dframe1['Number'], dframe2['Einwohner'])
         
         color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
         
