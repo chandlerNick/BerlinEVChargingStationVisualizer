@@ -338,12 +338,3 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 st.write(f"{i}. {suggestion}")
         else:
             st.info("No suggestions have been submitted yet.")
-    
-    
-
-
-
-
-
-
-
