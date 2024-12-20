@@ -253,7 +253,9 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         else:
             dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
         
+        # Create color map
         if demand == "Robert":
+            # Clip outliers basically -- choose the smaller of the two extreme observations
             mi = dframe2['Demand'].min()
             ma = dframe2['Demand'].max()
             fence = ma
@@ -263,6 +265,8 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         else:
             color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
         
+        
+        # Color in polygons
         for idx, row in dframe2.iterrows():
             folium.GeoJson(
                 row['geometry'],
