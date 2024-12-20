@@ -246,10 +246,10 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         #dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
         
         # Luisa's way
-        dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
+        # dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
         
         # Robert's way
-        # dframe2['Demand'] = robert_demands(dframe1['Number'], dframe2['Einwohner'])
+        dframe2['Demand'] = robert_demands(dframe1['Number'], dframe2['Einwohner'])
         
         color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
         
