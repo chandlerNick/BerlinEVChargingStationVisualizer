@@ -259,7 +259,7 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
             fence = ma
             if mi > ma: 
                 fence = mi
-            color_map = LinearColormap(colors=['yellow', 'red'], vmin=fence, vmax=fence)
+            color_map = LinearColormap(colors=['yellow', 'red'], vmin=-abs(fence), vmax=abs(fence))
         else:
             color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
         
