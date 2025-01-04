@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 # Define the path to the suggestions file
-SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
+SUGGESTIONS_FILE = "/~/Documents/Master Data Science/5. Semester/Advanced Software Engineering/Project/BerlinEVChargingStationVisualizer/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
 
 # Luisa's demand function
@@ -30,9 +30,8 @@ def lusia_demands(dataframe_column_1, dataframe_column_2):
 
 # Robert's demand function
 def robert_demands(dataframe_column_1, dataframe_column_2):
-    return round((0.01*dataframe_column_2/10).sub(dataframe_column_1, fill_value=0), 0)
-
-
+    result = (0.01 * dataframe_column_2 / 10).sub(dataframe_column_1).astype(int)
+    return result
 
 
 # Function to initialize the JSON file
@@ -242,22 +241,26 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         # st.dataframe(gdf_residents2)
 
     elif layer_selection == "Demand":
-        # Create a colormap for demand - read in both, for each bezirk, divide num stations by pop
+        # Create a colormap for demand - read in both, for each bezirk, divide num stations by population
 
 
         # Implement Demand
         if demand == "Robert":
-            dframe2['Demand'] = robert_demands(dframe1['Number'], dframe2['Einwohner'])
+            dframe1['PLZ'] = dframe1['PLZ'].astype(int)
+            dframe1 = dframe1.iloc[:,0:2]
+            merged = dframe1.merge(dframe2, on='PLZ', how='inner')
+            merged['Demand'] = robert_demands(merged['Number'], merged['Einwohner'])
         elif demand == "Luisa":
             dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
         else:
             dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
         
+
         # Create color map
         if demand == "Robert":
             # Clip outliers basically -- choose the smaller of the two extreme observations
-            mi = dframe2['Demand'].min()
-            ma = dframe2['Demand'].max()
+            mi = merged['Demand'].min()
+            ma = merged['Demand'].max()
             fence = ma
             if abs(mi) < abs(ma): 
                 fence = mi
@@ -267,7 +270,7 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         
         
         # Color in polygons
-        for idx, row in dframe2.iterrows():
+        for idx, row in merged.iterrows():
             folium.GeoJson(
                 row['geometry'],
                 style_function=lambda x, color=color_map(row['Demand']): {
@@ -306,7 +309,7 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     
     folium_static(m, width=800, height=600)
     
-    
+              
     # Load suggestions into memory
     if "suggestions" not in st.session_state:
         st.session_state["suggestions"] = load_suggestions()
@@ -338,3 +341,5 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 st.write(f"{i}. {suggestion}")
         else:
             st.info("No suggestions have been submitted yet.")
+
+
