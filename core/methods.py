@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 # Define the path to the suggestions file
-SUGGESTIONS_FILE = "/Users/robert/Documents/Master Data Science/5. Semester/Advanced Software Engineering/Project/BerlinEVChargingStationVisualizer/berlinevchargingstationvisualizer/datasets/suggestions.json"
+SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
 
 # Luisa's demand function
