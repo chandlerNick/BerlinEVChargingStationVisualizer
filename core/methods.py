@@ -1,6 +1,6 @@
-import pandas                        as pd
-import geopandas                     as gpd
-import core.HelperTools              as ht
+import pandas as pd
+import geopandas as gpd
+import core.HelperTools as ht
 
 import folium
 # from folium.plugins import HeatMap
@@ -9,22 +9,25 @@ from streamlit_folium import folium_static
 from branca.colormap import LinearColormap
 import json
 from pathlib import Path
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 # Define the path to the suggestions file
-SUGGESTIONS_FILE = "/~/Documents/Master Data Science/5. Semester/Advanced Software Engineering/Project/BerlinEVChargingStationVisualizer/berlinevchargingstationvisualizer/datasets/suggestions.json"
+SUGGESTIONS_FILE = "/Users/robert/Documents/Master Data Science/5. Semester/Advanced Software Engineering/Project/BerlinEVChargingStationVisualizer/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
 
 # Luisa's demand function
 def lusia_demands(dataframe_column_1, dataframe_column_2):
-    
     # Update the number of stations to account for the fill value
     dataframe_column_1 = dataframe_column_1 + 1
     
-    # Divsion with fill value
+    # Division with fill value
     x = dataframe_column_2.div(dataframe_column_1, fill_value=1)
     
     # Function per Luisa
     return round(x / (5000 + x), 3)
+
 
 # -----------------------------------------------------------------------
 
@@ -43,8 +46,8 @@ def initialize_file():
         with open(SUGGESTIONS_FILE, "w") as file:
             json.dump([], file)  # Create an empty list in the file
 
-# -----------------------------------------------------------------------
 
+# -----------------------------------------------------------------------
 
 # Function to load suggestions from the file
 def load_suggestions():
@@ -56,6 +59,7 @@ def load_suggestions():
         with open(SUGGESTIONS_FILE, "r") as file:
             return json.load(file)
     return []
+
 
 # -----------------------------------------------------------------------
 # Function to save suggestions to the file
@@ -72,51 +76,56 @@ def save_suggestions(suggestions):
 
 # -----------------------------------------------------------------------
 
-def sort_by_plz_add_geometry(dfr, dfg, pdict): 
-    dframe                  = dfr.copy()
-    df_geo                  = dfg.copy()
+def sort_by_plz_add_geometry(dfr, dfg, pdict):
+    dframe = dfr.copy()
+    df_geo = dfg.copy()
     
-    sorted_df               = dframe\
+    sorted_df = dframe\
         .sort_values(by='PLZ')\
         .reset_index(drop=True)\
         .sort_index()
         
-    sorted_df2              = sorted_df.merge(df_geo, on=pdict["geocode"], how ='left')
-    sorted_df3              = sorted_df2.dropna(subset=['geometry'])
+    sorted_df2 = sorted_df.merge(df_geo, on=pdict["geocode"], how='left')
+    sorted_df3 = sorted_df2.dropna(subset=['geometry'])
     
-    sorted_df3['geometry']  = gpd.GeoSeries.from_wkt(sorted_df3['geometry'])
-    ret                     = gpd.GeoDataFrame(sorted_df3, geometry='geometry')
+    sorted_df3['geometry'] = gpd.GeoSeries.from_wkt(sorted_df3['geometry'])
+    ret = gpd.GeoDataFrame(sorted_df3, geometry='geometry')
     
     return ret
 
+
 # -----------------------------------------------------------------------------
+
+
 @ht.timer
 def preprop_lstat(dfr, dfg, pdict):
     """Preprocessing dataframe from Ladesaeulenregister.csv"""
-    dframe                  = dfr.copy()
-    df_geo                  = dfg.copy()
+    dframe = dfr.copy()
+    df_geo = dfg.copy()
     
-    dframe2               	= dframe.loc[:,['Postleitzahl', 'Bundesland', 'Breitengrad', 'Längengrad', 'Nennleistung Ladeeinrichtung [kW]']]
-    dframe2.rename(columns  = {"Nennleistung Ladeeinrichtung [kW]":"KW", "Postleitzahl": "PLZ"}, inplace = True)
+    dframe2 = dframe.loc[:, ['Postleitzahl', 'Bundesland', 'Breitengrad', 'Längengrad', 'Nennleistung Ladeeinrichtung [kW]']]
+    dframe2.rename(columns={"Nennleistung Ladeeinrichtung [kW]": "KW", "Postleitzahl": "PLZ"}, inplace=True)
 
     # Convert to string
-    dframe2['Breitengrad']  = dframe2['Breitengrad'].astype(str)
-    dframe2['Längengrad']   = dframe2['Längengrad'].astype(str)
+    dframe2['Breitengrad'] = dframe2['Breitengrad'].astype(str)
+    dframe2['Längengrad'] = dframe2['Längengrad'].astype(str)
 
     # Now replace the commas with periods
-    dframe2['Breitengrad']  = dframe2['Breitengrad'].str.replace(',', '.')
-    dframe2['Längengrad']   = dframe2['Längengrad'].str.replace(',', '.')
+    dframe2['Breitengrad'] = dframe2['Breitengrad'].str.replace(',', '.')
+    dframe2['Längengrad'] = dframe2['Längengrad'].str.replace(',', '.')
 
-    dframe3                 = dframe2[(dframe2["Bundesland"] == 'Berlin') & 
-                                            (dframe2["PLZ"] > 10115) &  
-                                            (dframe2["PLZ"] < 14200)]
+    dframe3 = dframe2[(dframe2["Bundesland"] == 'Berlin') & 
+                      (dframe2["PLZ"] > 10115) &  
+                      (dframe2["PLZ"] < 14200)]
     
     ret = sort_by_plz_add_geometry(dframe3, df_geo, pdict)
     
     return ret
-    
+
 
 # -----------------------------------------------------------------------------
+
+
 @ht.timer
 def count_plz_occurrences(df_lstat2):
     """Counts loading stations per PLZ"""
@@ -127,69 +136,31 @@ def count_plz_occurrences(df_lstat2):
     ).reset_index()
     
     return result_df
-    
-# -----------------------------------------------------------------------------
-# @ht.timer
-# def preprop_geb(dfr, pdict):
-#     """Preprocessing dataframe from gebaeude.csv"""
-#     dframe      = dfr.copy()
-    
-#     dframe2     = dframe .loc[:,['lag', 'bezbaw', 'geometry']]
-#     dframe2.rename(columns      = {"bezbaw":"Gebaeudeart", "lag": "PLZ"}, inplace = True)
-    
-    
-#     # Now, let's filter the DataFrame
-#     dframe3 = dframe2[
-#         dframe2['PLZ'].notna() &  # Remove NaN values
-#         ~dframe2['PLZ'].astype(str).str.contains(',') &  # Remove entries with commas
-#         (dframe2['PLZ'].astype(str).str.len() <= 5)  # Keep entries with 5 or fewer characters
-#         ]
-    
-#     # Convert PLZ to numeric, coercing errors to NaN
-#     dframe3['PLZ_numeric'] = pd.to_numeric(dframe3['PLZ'], errors='coerce')
 
-#     # Filter for PLZ between 10000 and 14200
-#     filtered_df = dframe3[
-#         (dframe3['PLZ_numeric'] >= 10000) & 
-#         (dframe3['PLZ_numeric'] <= 14200)
-#     ]
 
-#     # Drop the temporary numeric column
-#     filtered_df2 = filtered_df.drop('PLZ_numeric', axis=1)
-    
-#     filtered_df3 = filtered_df2[filtered_df2['Gebaeudeart'].isin(['Freistehendes Einzelgebäude', 'Doppelhaushälfte'])]
-    
-#     filtered_df4 = (filtered_df3\
-#                  .assign(PLZ=lambda x: pd.to_numeric(x['PLZ'], errors='coerce'))[['PLZ', 'Gebaeudeart', 'geometry']]
-#                  .sort_values(by='PLZ')
-#                  .reset_index(drop=True)
-#                  )
-    
-#     ret                     = filtered_df4.dropna(subset=['geometry'])
-        
-#     return ret
-    
 # -----------------------------------------------------------------------------
+
+
 @ht.timer
 def preprop_resid(dfr, dfg, pdict):
     """Preprocessing dataframe from plz_einwohner.csv"""
-    dframe                  = dfr.copy()
-    df_geo                  = dfg.copy()    
+    dframe = dfr.copy()
+    df_geo = dfg.copy()    
     
-    dframe2               	= dframe.loc[:,['plz', 'einwohner', 'lat', 'lon']]
-    dframe2.rename(columns  = {"plz": "PLZ", "einwohner": "Einwohner", "lat": "Breitengrad", "lon": "Längengrad"}, inplace = True)
+    dframe2 = dframe.loc[:, ['plz', 'einwohner', 'lat', 'lon']]
+    dframe2.rename(columns={"plz": "PLZ", "einwohner": "Einwohner", "lat": "Breitengrad", "lon": "Längengrad"}, inplace=True)
 
     # Convert to string
-    dframe2['Breitengrad']  = dframe2['Breitengrad'].astype(str)
-    dframe2['Längengrad']   = dframe2['Längengrad'].astype(str)
+    dframe2['Breitengrad'] = dframe2['Breitengrad'].astype(str)
+    dframe2['Längengrad'] = dframe2['Längengrad'].astype(str)
 
     # Now replace the commas with periods
-    dframe2['Breitengrad']  = dframe2['Breitengrad'].str.replace(',', '.')
-    dframe2['Längengrad']   = dframe2['Längengrad'].str.replace(',', '.')
+    dframe2['Breitengrad'] = dframe2['Breitengrad'].str.replace(',', '.')
+    dframe2['Längengrad'] = dframe2['Längengrad'].str.replace(',', '.')
 
-    dframe3                 = dframe2[ 
-                                            (dframe2["PLZ"] > 10000) &  
-                                            (dframe2["PLZ"] < 14200)]
+    dframe3 = dframe2[ 
+                      (dframe2["PLZ"] > 10000) &  
+                      (dframe2["PLZ"] < 14200)]
     
     ret = sort_by_plz_add_geometry(dframe3, df_geo, pdict)
     
@@ -197,6 +168,8 @@ def preprop_resid(dfr, dfg, pdict):
 
 
 # -----------------------------------------------------------------------------
+
+
 @ht.timer
 def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     """Makes Streamlit App with Heatmap of Electric Charging Stations and Residents"""
@@ -209,8 +182,6 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     st.title('Heatmaps: Electric Charging Stations and Residents')
 
     # Create a radio button for layer selection
-    # layer_selection = st.radio("Select Layer", ("Number of Residents per PLZ (Postal code)", "Number of Charging Stations per PLZ (Postal code)"))
-
     layer_selection = st.radio("Select Layer", ("Residents", "Charging_Stations", "Demand"))
 
     demand = st.radio("Select Demand Function", ("Robert", "Luisa", "Default"))
@@ -220,8 +191,8 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
 
     if layer_selection == "Residents":
         
-        # Create a color map for Residents
-        color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Einwohner'].min(), vmax=dframe2['Einwohner'].max())
+        # Create a color map for Residents using LinearColormap from branca
+        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=dframe2['Einwohner'].min(), vmax=dframe2['Einwohner'].max())
 
         # Add polygons to the map for Residents
         for idx, row in dframe2.iterrows():
@@ -235,41 +206,38 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 },
                 tooltip=f"PLZ: {row['PLZ']}, Einwohner: {row['Einwohner']}"
             ).add_to(m)
-        
-        # Display the dataframe for Residents
-        # st.subheader('Residents Data')
-        # st.dataframe(gdf_residents2)
 
     elif layer_selection == "Demand":
-        # Create a colormap for demand - read in both, for each bezirk, divide num stations by population
-
-
         # Implement Demand
         if demand == "Robert":
             dframe1['PLZ'] = dframe1['PLZ'].astype(int)
-            dframe1 = dframe1.iloc[:,0:2]
+            dframe1 = dframe1.iloc[:, 0:2]
             merged = dframe1.merge(dframe2, on='PLZ', how='inner')
             merged['Demand'] = robert_demands(merged['Number'], merged['Einwohner'])
         elif demand == "Luisa":
             dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
         else:
             dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
-        
 
-        # Create color map
+        # Create colormap for demand
         if demand == "Robert":
-            # Clip outliers basically -- choose the smaller of the two extreme observations
             mi = merged['Demand'].min()
             ma = merged['Demand'].max()
-            fence = ma
-            if abs(mi) < abs(ma): 
-                fence = mi
-            color_map = LinearColormap(colors=['yellow', 'red'], vmin=-abs(fence), vmax=abs(fence))
+            color_map = LinearColormap(
+                colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
+                vmin=mi, 
+                vmax=ma
+            )
+            color_map = color_map.scale(vmin=mi, vmax=ma)
+
         else:
-            color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe2['Demand'].min(), vmax=dframe2['Demand'].max())
-        
-        
-        # Color in polygons
+            color_map = LinearColormap(
+                colors=["blue", "red"], 
+                vmin=dframe2['Demand'].min(), 
+                vmax=dframe2['Demand'].max()
+            )
+
+        # Add polygons to the map for Demand
         for idx, row in merged.iterrows():
             folium.GeoJson(
                 row['geometry'],
@@ -281,13 +249,12 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 },
                 tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
             ).add_to(m)
-        
+    
     else:
         # Create a color map for Numbers
+        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
 
-        color_map = LinearColormap(colors=['yellow', 'red'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
-
-    # Add polygons to the map for Numbers
+        # Add polygons to the map for Numbers
         for idx, row in dframe1.iterrows():
             folium.GeoJson(
                 row['geometry'],
@@ -300,16 +267,11 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 tooltip=f"PLZ: {row['PLZ']}, Number: {row['Number']}"
             ).add_to(m)
 
-        # Display the dataframe for Numbers
-        # st.subheader('Numbers Data')
-        # st.dataframe(gdf_lstat3)
-
     # Add color map to the map
     color_map.add_to(m)
     
     folium_static(m, width=800, height=600)
     
-              
     # Load suggestions into memory
     if "suggestions" not in st.session_state:
         st.session_state["suggestions"] = load_suggestions()
@@ -341,5 +303,3 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 st.write(f"{i}. {suggestion}")
         else:
             st.info("No suggestions have been submitted yet.")
-
-
