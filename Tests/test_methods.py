@@ -39,9 +39,9 @@ class TestMethods(TestCase):
 
         manual_result = sort_by_plz_add_geometry(dframe3, df_geodat_plz, pdict)
 
-        # Assertion - uses pandas testing to verify
+        # Assertion - uses geopandas testing to verify
         try:
             assert_geodataframe_equal(manual_result, method_result)
         except AssertionError as e:
             self.fail(f"GeoDataFrames are not equal: {e}")
-           
+
