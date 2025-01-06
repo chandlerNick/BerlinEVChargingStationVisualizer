@@ -16,19 +16,6 @@ import matplotlib.colors as mcolors
 # Define the path to the suggestions file
 SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
-
-# Luisa's demand function
-def lusia_demands(dataframe_column_1, dataframe_column_2):
-    # Update the number of stations to account for the fill value
-    dataframe_column_1 = dataframe_column_1 + 1
-    
-    # Division with fill value
-    x = dataframe_column_2.div(dataframe_column_1, fill_value=1)
-    
-    # Function per Luisa
-    return round(x / (5000 + x), 3)
-
-
 # -----------------------------------------------------------------------
 
 # Robert's demand function
@@ -177,12 +164,19 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     dframe1 = dfr1.copy()
     dframe2 = dfr2.copy()
 
+    # Merge resident and charging station data
+    dframe1['PLZ'] = dframe1['PLZ'].astype(int)
+    dframe1 = dframe1.iloc[:, 0:2]
+    merged = dframe2.merge(dframe1, on='PLZ', how='left')
+
+    # Fill NaN values with 0
+    merged['Number'] = merged['Number'].fillna(0)
 
     # Streamlit app
     st.title('Heatmaps: Electric Charging Stations and Residents')
 
     # Create a radio button for layer selection
-    layer_selection = st.radio("Select Layer", ("Residents", "Charging_Stations", "Demand"))
+    layer_selection = st.radio("Select Layer", ("Residents", "Charging Stations", "Demand"))
 
     # Create a Folium map
     m = folium.Map(location=[52.52, 13.40], zoom_start=10)
@@ -207,9 +201,6 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
 
     elif layer_selection == "Demand":
         # Implement Demand
-        dframe1['PLZ'] = dframe1['PLZ'].astype(int)
-        dframe1 = dframe1.iloc[:, 0:2]
-        merged = dframe1.merge(dframe2, on='PLZ', how='inner')
         merged['Demand'] = robert_demands(merged['Number'], merged['Einwohner'])
         
         # Create colormap for demand
