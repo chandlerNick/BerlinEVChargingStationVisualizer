@@ -184,8 +184,6 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     # Create a radio button for layer selection
     layer_selection = st.radio("Select Layer", ("Residents", "Charging_Stations", "Demand"))
 
-    demand = st.radio("Select Demand Function", ("Robert", "Luisa", "Default"))
-
     # Create a Folium map
     m = folium.Map(location=[52.52, 13.40], zoom_start=10)
 
@@ -209,33 +207,20 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
 
     elif layer_selection == "Demand":
         # Implement Demand
-        if demand == "Robert":
-            dframe1['PLZ'] = dframe1['PLZ'].astype(int)
-            dframe1 = dframe1.iloc[:, 0:2]
-            merged = dframe1.merge(dframe2, on='PLZ', how='inner')
-            merged['Demand'] = robert_demands(merged['Number'], merged['Einwohner'])
-        elif demand == "Luisa":
-            dframe2['Demand'] = lusia_demands(dframe1['Number'], dframe2['Einwohner'])
-        else:
-            dframe2['Demand'] = dframe2['Einwohner'].div(dframe1['Number'], fill_value=1)
-
+        dframe1['PLZ'] = dframe1['PLZ'].astype(int)
+        dframe1 = dframe1.iloc[:, 0:2]
+        merged = dframe1.merge(dframe2, on='PLZ', how='inner')
+        merged['Demand'] = robert_demands(merged['Number'], merged['Einwohner'])
+        
         # Create colormap for demand
-        if demand == "Robert":
-            mi = merged['Demand'].min()
-            ma = merged['Demand'].max()
-            color_map = LinearColormap(
-                colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
-                vmin=mi, 
-                vmax=ma
-            )
-            color_map = color_map.scale(vmin=mi, vmax=ma)
-
-        else:
-            color_map = LinearColormap(
-                colors=["blue", "red"], 
-                vmin=dframe2['Demand'].min(), 
-                vmax=dframe2['Demand'].max()
-            )
+        mi = merged['Demand'].min()
+        ma = merged['Demand'].max()
+        color_map = LinearColormap(
+            colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
+            vmin=mi, 
+            vmax=ma
+        )
+        color_map = color_map.scale(vmin=mi, vmax=ma)
 
         # Add polygons to the map for Demand
         for idx, row in merged.iterrows():
@@ -303,3 +288,4 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
                 st.write(f"{i}. {suggestion}")
         else:
             st.info("No suggestions have been submitted yet.")
+
