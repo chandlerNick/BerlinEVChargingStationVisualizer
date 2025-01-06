@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from unittest.mock import patch
 from core.methods import initialize_file, load_suggestions
+from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, SUGGESTIONS_FILE
 
 
 SUGGESTIONS_FILE = "datasets/suggestions.json"

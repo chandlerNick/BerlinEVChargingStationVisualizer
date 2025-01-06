@@ -113,7 +113,12 @@ def preprop_resid(dfr, dfg, pdict):
 
 @ht.timer
 def make_streamlit_electric_Charging_resid(dfr1, dfr2):
-    """Makes Streamlit App with Heatmap of Electric Charging Stations and Residents"""
+    """
+    Makes Streamlit App with Heatmap of Electric Charging Stations and Residents
+    Inputs: dfr1 - , dfr2 -
+    Outputs: None
+    Postconditions: Streamlit app is built and deployed
+    """
     
     dframe1 = dfr1.copy()
     dframe2 = dfr2.copy()
