@@ -2,7 +2,8 @@ import unittest
 # from demand_file import calculate_demand
 import pandas as pd
 import numpy as np
-from core.methods import robert_demands
+from core.demand_methods.DemandMethods import robert_demands
+
 
 
 class TestDemandFunction(unittest.TestCase):

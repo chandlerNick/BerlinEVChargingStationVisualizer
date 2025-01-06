@@ -7,58 +7,12 @@ import folium
 import streamlit as st
 from streamlit_folium import folium_static
 from branca.colormap import LinearColormap
-import json
-from pathlib import Path
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+from core.demand_methods.DemandMethods import robert_demands
+from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, SUGGESTIONS_FILE
 
-# Define the path to the suggestions file
-SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
-
-# -----------------------------------------------------------------------
-
-# Robert's demand function
-def robert_demands(dataframe_column_1, dataframe_column_2):
-    result = (0.01 * dataframe_column_2 / 10).sub(dataframe_column_1).astype(int)
-    return result
-
-
-# Function to initialize the JSON file
-def initialize_file():
-    '''
-    Initializes the JSON file if it isn't already
-    '''
-    if not Path(SUGGESTIONS_FILE).exists():  # Check if the file exists
-        with open(SUGGESTIONS_FILE, "w") as file:
-            json.dump([], file)  # Create an empty list in the file
-
-
-# -----------------------------------------------------------------------
-
-# Function to load suggestions from the file
-def load_suggestions():
-    '''
-    Loads the suggestions from the json file at the specified path
-    '''
-    initialize_file()
-    if Path(SUGGESTIONS_FILE).exists():
-        with open(SUGGESTIONS_FILE, "r") as file:
-            return json.load(file)
-    return []
-
-
-# -----------------------------------------------------------------------
-# Function to save suggestions to the file
-
-
-def save_suggestions(suggestions):
-    '''
-    Save suggestions to the json file at the specified path
-    Input: suggestions
-    '''
-    with open(SUGGESTIONS_FILE, "w+") as file:
-        json.dump(suggestions, file)
 
 
 # -----------------------------------------------------------------------
@@ -247,6 +201,14 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     color_map.add_to(m)
     
     folium_static(m, width=800, height=600)
+    
+    
+    # ---------------------------------------------------------------------------------------------------------------------
+    # Suggestions section
+    # ---------------------------------------------------------------------------------------------------------------------
+    
+    # Call the init file method (creates the file if it doesn't yet exist)
+    initialize_file()
     
     # Load suggestions into memory
     if "suggestions" not in st.session_state:
