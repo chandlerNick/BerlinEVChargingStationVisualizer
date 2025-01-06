@@ -176,7 +176,7 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     st.title('Heatmaps: Electric Charging Stations and Residents')
 
     # Create a radio button for layer selection
-    layer_selection = st.radio("Select Layer", ("Residents", "Charging Stations", "Demand"))
+    layer_selection = st.radio("Select Layer", ("Residents", "Charging_Stations", "Demand"))
 
     # Create a Folium map
     m = folium.Map(location=[52.52, 13.40], zoom_start=10)
