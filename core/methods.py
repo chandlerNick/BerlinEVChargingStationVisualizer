@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 # Define the path to the suggestions file
-SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
+SUGGESTIONS_FILE = "/Users/robert/Documents/Master Data Science/5. Semester/Advanced Software Engineering/Project/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
 # -----------------------------------------------------------------------
 
@@ -228,10 +228,10 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     
     else:
         # Create a color map for Numbers
-        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
+        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
 
         # Add polygons to the map for Numbers
-        for idx, row in dframe1.iterrows():
+        for idx, row in merged.iterrows():
             folium.GeoJson(
                 row['geometry'],
                 style_function=lambda x, color=color_map(row['Number']): {
