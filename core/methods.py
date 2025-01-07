@@ -322,8 +322,6 @@ def view_suggestions():
         with the option to filter by PLZ
     '''
     st.sidebar.header("Suggestions List")
-
-    st.session_state["suggestions"] = load_suggestions()  # Update session state
     
     if st.session_state["suggestions"]:
         # Input for filtering by postal code
