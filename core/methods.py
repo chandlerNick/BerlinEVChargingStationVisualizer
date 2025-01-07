@@ -212,6 +212,23 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
                 },
                 tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
             ).add_to(m)
+            
+            
+
+            # Add formula for demand function
+            latex_expression = r'''
+            \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}
+            
+            \begin{itemize}
+                \item \text{E} = \text{Electric vehicles per resident}
+                \item \text{P} = \text{Population per PLZ}
+                \item \text{EVPCS} = \text{Electric vehicles per charging station}
+                \item \text{CS} = \text{Charging stations that exist in the PLZ}
+            \end{itemize}
+            '''
+            st.text("Demand Formula")
+            st.latex(latex_expression)
+            
     
     else:
         # Create a color map for Numbers
@@ -232,9 +249,9 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
 
     # Add color map to the map
     color_map.add_to(m)
-    
     folium_static(m, width=800, height=600)
     
+
     
     # ---------------------------------------------------------------------------------------------------------------------
     # Suggestions section
