@@ -443,4 +443,5 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     elif option == "Clear Suggestions":
 
         clear_suggestions()
+        st.sidebar.empty()
         
