@@ -273,7 +273,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         
         if st.session_state["suggestions"]:
             # Input for filtering by postal code
-            filter_postal_code = st.text_input("Filter by postal code:")
+            filter_postal_code = st.text_input("Filter by postal code - Optional - Enter '000' to get the full list:")
             
             # Filter or sort suggestions based on postal code
             filtered_suggestions = (
@@ -289,15 +289,18 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
             if filtered_suggestions:
                 for i, suggestion in enumerate(filtered_suggestions, 1):
                     st.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
+            elif filter_postal_code == "000":
+                for i, suggestion in enumerate(suggestion, 1):
+                    st.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
             else:
                 st.info("No suggestions match the given postal code.")
         else:
             st.info("No suggestions have been submitted yet.")
     
     elif option == "Clear Suggestions":
-        st.header("Input the Admin Password")
+        st.header("Input the Admin Password To Clear Suggestions")
         
         password_input = st.text_input("Password:")
         clear_suggestions(password_input)
-        
+        st.session_state["suggestions"] = load_suggestions()
 
