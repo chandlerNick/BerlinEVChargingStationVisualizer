@@ -215,19 +215,19 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
             
             
 
-            # Add formula for demand function
-            latex_expression = r'''
-            \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}
+        # Add formula for demand function
+        latex_expression = r'''
+        \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}
             
-            \begin{itemize}
-                \item \text{E} = \text{Electric vehicles per resident}
-                \item \text{P} = \text{Population per PLZ}
-                \item \text{EVPCS} = \text{Electric vehicles per charging station}
-                \item \text{CS} = \text{Charging stations that exist in the PLZ}
-            \end{itemize}
-            '''
-            st.text("Demand Formula")
-            st.latex(latex_expression)
+        \begin{itemize}
+            \item \text{E} = \text{Electric vehicles per resident}
+            \item \text{P} = \text{Population per PLZ}
+            \item \text{EVPCS} = \text{Electric vehicles per charging station}
+            \item \text{CS} = \text{Charging stations that exist in the PLZ}
+        \end{itemize}
+        '''
+        st.text("Demand Formula")
+        st.latex(latex_expression)
             
     
     else:
