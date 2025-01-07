@@ -323,6 +323,8 @@ def view_suggestions(placeholder):
     '''
     st.sidebar.header("Suggestions List")
     
+    st.session_state["suggestions"] = load_suggestions()
+    
     if st.session_state["suggestions"]:
         # Input for filtering by postal code
         filter_postal_code = st.sidebar.text_input("Filter by postal code")
