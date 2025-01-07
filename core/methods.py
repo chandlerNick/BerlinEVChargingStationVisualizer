@@ -363,12 +363,9 @@ def clear_suggestions():
     password_input = st.sidebar.text_input("Password:", type="password")
         
     # Clear suggestions & Update state
-    clear_suggestions(password_input.strip())
+    clear_suggestions(password_input)
     st.session_state["suggestions"] = load_suggestions()
     st.sidebar.empty()
-    if password_input.strip() == "1234":
-        st.sidebar.write("Password Accepted")
-    st.sidebar.info("Suggestions cleared")
 
 # -----------------------------------------------------------------------
 
