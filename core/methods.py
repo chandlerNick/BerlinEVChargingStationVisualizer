@@ -291,8 +291,6 @@ def submit_a_suggestion(VALID_POSTAL_CODES):
     Postcondition: The suggestion file is written and the streamlit app is deployed
     '''
     st.sidebar.header("Submit Your Suggestion")
-
-    st.session_state["suggestions"] = load_suggestions()  # Update session state
     
     # Text input for the suggestion
     postal_code = st.sidebar.text_input("Enter PLZ:")
