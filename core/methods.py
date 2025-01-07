@@ -151,6 +151,7 @@ def merge_geo_dataframes(df_charging_stations, df_population):
 
 # -------------------------------------------------------------------------
 
+@st.cache
 def create_residents_layer(df_population, folium_map):
     '''
     Creates the residents layer
@@ -200,6 +201,7 @@ def write_demand_formula_to_screen(formula, variables):
 
 # ------------------------------------------------------------------------
 
+@st.cache
 def create_demand_layer(df_merged, folium_map):
     '''
     Creates the demand layer
@@ -248,6 +250,7 @@ def create_demand_layer(df_merged, folium_map):
 
 # -----------------------------------------------------------------------
 
+@st.cache
 def create_charging_stations_layer(df_merged, folium_map):
     '''
     Creates the charging stations layer of the map
