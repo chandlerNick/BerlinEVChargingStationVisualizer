@@ -340,7 +340,7 @@ def view_suggestions(placeholder):
         # Display each suggestion
         if filtered_suggestions:
             for i, suggestion in enumerate(filtered_suggestions, 1):
-                placeholder.sidebar.text(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
+                placeholder.sidebar.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
         else:
             st.sidebar.info("No suggestions match the given postal code.")
     else:
