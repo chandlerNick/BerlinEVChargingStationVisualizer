@@ -216,7 +216,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
             
 
         # Add formula for demand function
-        latex_formula = r"\frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}\newline\newline"
+        latex_formula = r"\text{Demand} = \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}\newline\newline"
         latex_variables = r"""
             \\
             \begin{array}{ll}
