@@ -11,7 +11,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from core.demand_methods.DemandMethods import robert_demands
-from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, SUGGESTIONS_FILE
+from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions
 
 
 
@@ -243,23 +243,26 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         st.session_state["suggestions"] = load_suggestions()
 
     # Sidebar menu
-    option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions"])
+    option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions", "Clear Suggestions"])
 
     if option == "Submit a Suggestion":
         st.header("Submit Your Suggestion")
         
         # Text input for the suggestion
+        postal_code = st.text_input("Enter PLZ:")
         suggestion = st.text_area("Write your suggestion here:")
-        postal_code = st.text_input("Enter postal code (e.g., 10115):")
         
         # Button to submit the suggestion
         if st.button("Submit Suggestion"):
-            if suggestion.strip():  # Check if the suggestion is not empty
-                st.session_state["suggestions"].append({
-                    "Text": suggestion.strip(),
-                    "PLZ": postal_code.strip()})
-                save_suggestions(st.session_state["suggestions"])  # Save to file
-                st.success("Thank you for your suggestion!")
+            if suggestion.strip() and postal_code.strip():  # Check if the suggestion is not empty
+                if postal_code.strip() in df_charging_stations_copy['PLZ']:
+                    st.session_state["suggestions"].append({
+                        "Text": suggestion.strip(),
+                        "PLZ": postal_code.strip()})
+                    save_suggestions(st.session_state["suggestions"])  # Save to file
+                    st.success("Thank you for your suggestion!")
+                else:
+                    st.error("Invalid PLZ.")
             else:
                 st.warning("Suggestion and PLZ cannot be empty.")
 
@@ -268,7 +271,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         
         if st.session_state["suggestions"]:
             # Input for filtering by postal code
-            filter_postal_code = st.text_input("Filter by postal code (optional):")
+            filter_postal_code = st.text_input("Filter by postal code:")
             
             # Filter or sort suggestions based on postal code
             filtered_suggestions = (
@@ -282,10 +285,17 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
             
             # Display each suggestion
             if filtered_suggestions:
-                for i, suggestion in enumerate(st.session_state["suggestions"], 1):
+                for i, suggestion in enumerate(filtered_suggestions, 1):
                     st.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
             else:
                 st.info("No suggestions match the given postal code.")
         else:
             st.info("No suggestions have been submitted yet.")
+    
+    elif option == "Clear Suggestions":
+        st.header("Input the Admin Password")
+        
+        password_input = st.text_input("Password:")
+        clear_suggestions(password_input)
+        
 

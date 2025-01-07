@@ -10,6 +10,32 @@ from pathlib import Path
 # Define the path to the suggestions file
 SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/suggestions.json"
 
+
+# ----------------------------------------------------------------------
+def overwrite_file():
+    '''
+    Writes an empty JSON file to SUGGESTIONS_FILE
+    Inputs: None
+    Outputs: None
+    Postconditions: SUGGESTIONS_FILE is overwritten with an empty array
+    '''
+    with open(SUGGESTIONS_FILE, "w") as file:
+        json.dump([], file)  # Create an empty list in the file
+
+
+# ----------------------------------------------------------------------
+
+def clear_suggestions(password:str):
+    '''
+    If the password matches, we can wipe the suggestions file
+    Inputs: password, a string that is input on the streamlit UI
+    Outputs: None
+    Postconditions: The SUGGESTIONS_FILE is wiped if the correct password is given 
+    '''
+    if password == "AnimalC00kies?":  # This is the password in plaintext, what are the secure dev practices?
+        overwrite_file()
+
+
 # -----------------------------------------------------------------------
 
 # Function to initialize the JSON file
@@ -21,8 +47,7 @@ def initialize_file():
     Postcondition: An empty JSON file, SUGGESTIONS_FILE is created if it doesn't exist
     '''
     if not Path(SUGGESTIONS_FILE).exists():  # Check if the file exists
-        with open(SUGGESTIONS_FILE, "w") as file:
-            json.dump([], file)  # Create an empty list in the file
+        overwrite_file()
 
 
 # -----------------------------------------------------------------------
