@@ -289,6 +289,8 @@ def submit_a_suggestion(VALID_POSTAL_CODES):
     '''
     st.sidebar.header("Submit Your Suggestion")
 
+    st.session_state["suggestions"] = load_suggestions()  # Update session state
+    
     # Text input for the suggestion
     postal_code = st.sidebar.text_input("Enter PLZ:")
     suggestion = st.sidebar.text_area("Write your suggestion here:")
@@ -319,7 +321,9 @@ def view_suggestions():
         with the option to filter by PLZ
     '''
     st.sidebar.header("Suggestions List")
-        
+
+    st.session_state["suggestions"] = load_suggestions()  # Update session state
+    
     if st.session_state["suggestions"]:
         # Input for filtering by postal code
         filter_postal_code = st.sidebar.text_input("Filter by postal code")
