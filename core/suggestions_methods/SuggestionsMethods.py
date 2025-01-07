@@ -34,7 +34,7 @@ def clear_suggestions(password:str):
     Outputs: None
     Postconditions: The SUGGESTIONS_FILE is wiped if the correct password is given 
     '''
-    if password == "AnimalC00kies?":  # This is the password in plaintext, what are the secure dev practices?
+    if password == "1234":  # This is the password in plaintext, what are the secure dev practices?
         overwrite_file()
         st.sidebar.info("Password Accepted")
 
