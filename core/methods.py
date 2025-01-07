@@ -313,10 +313,10 @@ def submit_a_suggestion(VALID_POSTAL_CODES):
 
 # -----------------------------------------------------------------------
 
-def view_suggestions(placeholder):
+def view_suggestions():
     '''
     Allows the user to view suggestions and filter by PLZ
-    Inputs: an st.empty() object
+    Inputs: None
     Outputs: None
     Postconditions: The session state suggestions is read and the suggestions are displayed
         with the option to filter by PLZ
@@ -350,10 +350,10 @@ def view_suggestions(placeholder):
 
 # -----------------------------------------------------------------------
 
-def clear_suggestions(placeholder):
+def clear_suggestions():
     '''
     Takes a user password, and when correct, wipes the JSON file storing suggestions
-    Inputs: a placeholder to clear the suggestions
+    Inputs: None
     Outputs: None
     Postconditions: The JSON file storing suggestions is cleared and the session state is updated if the password is correct
     '''
@@ -365,7 +365,7 @@ def clear_suggestions(placeholder):
     # Clear suggestions & Update state
     clear_suggestions(password_input.strip())
     st.session_state["suggestions"] = load_suggestions()
-    placeholder.empty()
+    st.sidebar.empty()
 
 # -----------------------------------------------------------------------
 
@@ -441,9 +441,9 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
 
     elif option == "View Suggestions":
         
-        view_suggestions(placeholder)
+        view_suggestions()
     
     elif option == "Clear Suggestions":
 
-        clear_suggestions(placeholder)
+        clear_suggestions()
         
