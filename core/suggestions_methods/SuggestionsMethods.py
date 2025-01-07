@@ -36,7 +36,7 @@ def clear_suggestions(password:str):
     '''
     if password == "AnimalC00kies?":  # This is the password in plaintext, what are the secure dev practices?
         overwrite_file()
-        st.info("Password Accepted")
+        st.sidebar.info("Password Accepted")
 
 
 # -----------------------------------------------------------------------
