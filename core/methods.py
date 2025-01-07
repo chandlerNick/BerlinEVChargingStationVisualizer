@@ -238,7 +238,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     
     else:
         # Create a color map for Numbers
-        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
+        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=df_charging_stations_copy['Number'].min(), vmax=df_charging_stations_copy['Number'].max())
 
         # Add polygons to the map for Numbers
         for idx, row in df_merged.iterrows():
