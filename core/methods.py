@@ -17,17 +17,17 @@ from core.suggestions_methods.SuggestionsMethods import initialize_file, load_su
 
 # -----------------------------------------------------------------------
 
-def sort_by_plz_add_geometry(dfr, dfg, pdict):
+def sort_by_plz_add_geometry(df_register_input, df_geo_input, pdict):
     '''
     Inputs:
-        - dfr: 
-        - dfg: 
-        - pdict:
-    Outputs: 
+        - df_register_input: pandas dataframe containing auxilliary information about the districts of Berlin (eg. number of residents)
+        - df_geo_input: pandas dataframe containing geographic information about the districts of Berlin
+        - pdict: dictionary containing filenames
+    Outputs: A single geopandas geodataframe with the plz sorted and the geopandas geometry added by PLZ
     Postconditions: None
     '''
-    dframe = dfr.copy()
-    df_geo = dfg.copy()
+    dframe = df_register_input.copy()
+    df_geo = df_geo_input.copy()
     
     sorted_df = dframe\
         .sort_values(by='PLZ')\
@@ -120,26 +120,26 @@ def preprop_resid(dfr, dfg, pdict):
 
 
 @ht.timer
-def make_streamlit_electric_Charging_resid(dfr1, dfr2):
+def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     """
     Makes Streamlit App with Heatmap of Electric Charging Stations and Residents
     Inputs: 
-        - dfr1: 
-        - dfr2: 
+        - df_charging_stations: A geodataframe sorted by PLZ and containing information about the charging stations
+        - df_population: A geodataframe sorted by PLZ and containing information about the population
     Outputs: None
     Postconditions: Streamlit app is built and deployed
     """
     
-    dframe1 = dfr1.copy()
-    dframe2 = dfr2.copy()
+    df_charging_stations_copy = df_charging_stations.copy()
+    df_population_copy = df_population.copy()
 
     # Merge resident and charging station data
-    dframe1['PLZ'] = dframe1['PLZ'].astype(int)
-    dframe1 = dframe1.iloc[:, 0:2]
-    merged = dframe2.merge(dframe1, on='PLZ', how='left')
+    df_charging_stations_copy['PLZ'] = df_charging_stations_copy['PLZ'].astype(int)
+    df_charging_stations_copy = df_charging_stations_copy.iloc[:, 0:2]
+    df_merged = df_population_copy.merge(df_charging_stations_copy, on='PLZ', how='left')
 
     # Fill NaN values with 0
-    merged['Number'] = merged['Number'].fillna(0)
+    df_merged['Number'] = df_merged['Number'].fillna(0)
 
     # Streamlit app
     st.title('Heatmaps: Electric Charging Stations and Residents')
@@ -156,7 +156,7 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=dframe2['Einwohner'].min(), vmax=dframe2['Einwohner'].max())
 
         # Add polygons to the map for Residents
-        for idx, row in dframe2.iterrows():
+        for idx, row in df_population_copy.iterrows():
             folium.GeoJson(
                 row['geometry'],
                 style_function=lambda x, color=color_map(row['Einwohner']): {
@@ -170,20 +170,20 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
 
     elif layer_selection == "Demand":
         # Implement Demand
-        merged['Demand'] = robert_demands(merged['Number'], merged['Einwohner'])
+        df_merged['Demand'] = robert_demands(df_merged['Number'], df_merged['Einwohner'])
         
         # Create colormap for demand
-        mi = merged['Demand'].min()
-        ma = merged['Demand'].max()
+        mininmum_demand = df_merged['Demand'].min()
+        maximum_demand = df_merged['Demand'].max()
         color_map = LinearColormap(
             colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
-            vmin=mi, 
-            vmax=ma
+            vmin=mininmum_demand, 
+            vmax=maximum_demand
         )
-        color_map = color_map.scale(vmin=mi, vmax=ma)
+        color_map = color_map.scale(vmin=mininmum_demand, vmax=maximum_demand)
 
         # Add polygons to the map for Demand
-        for idx, row in merged.iterrows():
+        for idx, row in df_merged.iterrows():
             folium.GeoJson(
                 row['geometry'],
                 style_function=lambda x, color=color_map(row['Demand']): {
@@ -200,7 +200,7 @@ def make_streamlit_electric_Charging_resid(dfr1, dfr2):
         color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
 
         # Add polygons to the map for Numbers
-        for idx, row in merged.iterrows():
+        for idx, row in df_merged.iterrows():
             folium.GeoJson(
                 row['geometry'],
                 style_function=lambda x, color=color_map(row['Number']): {
