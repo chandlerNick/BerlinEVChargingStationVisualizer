@@ -131,6 +131,56 @@ def preprop_resid(dfr, dfg, paramdict):
 
 # -----------------------------------------------------------------------------
 
+def merge_geo_dataframes(df_charging_stations, df_population):
+    '''
+    Merges the charging stations and population dataframes and fills NA's with 0
+    Inputs:
+        - df_charging_stations: A geodataframe sorted by PLZ and containing information about the charging stations
+        - df_population: A geodataframe sorted by PLZ and containing information about the population
+    Outputs: A merged geodataframe
+    '''
+    # Merge resident and charging station data
+    df_charging_stations['PLZ'] = df_charging_stations['PLZ'].astype(int)
+    df_charging_stations = df_charging_stations.iloc[:, 0:2]
+    df_merged = df_population.merge(df_charging_stations, on='PLZ', how='left')
+
+    # Fill NaN values with 0
+    df_merged['Number'] = df_merged['Number'].fillna(0)
+    
+    return df_merged
+
+# -------------------------------------------------------------------------
+
+def create_residents_layer(df_population, folium_map):
+    '''
+    Creates the residents layer
+    Inputs:
+        - df_population: A geodataframe with location and population information
+        - folium_map: The folium map on which to draw the desired population map
+    Outputs:
+        - color_map: a color_map to be plotted
+        - folium_map: the folium_map to be added
+    Postconditions: The Residents layer of the streamlit map is created
+    '''    
+    # Create a color map for Residents using LinearColormap from branca
+    color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=df_population['Einwohner'].min(), vmax=df_population['Einwohner'].max())
+
+    # Add polygons to the map for Residents
+    for idx, row in df_population.iterrows():
+        folium.GeoJson(
+            row['geometry'],
+            style_function=lambda x, color=color_map(row['Einwohner']): {
+                'fillColor': color,
+                'color': 'black',
+                'weight': 1,
+                'fillOpacity': 0.7
+            },
+            tooltip=f"PLZ: {row['PLZ']}, Einwohner: {row['Einwohner']}"
+        ).add_to(folium_map)
+
+
+    return color_map, folium_map
+
 
 @ht.timer
 def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
@@ -143,20 +193,13 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     Postconditions: Streamlit app is built and deployed
     """
     
+    # Process data
     df_charging_stations_copy = df_charging_stations.copy()
     df_population_copy = df_population.copy()
-
-    # Merge resident and charging station data
-    df_charging_stations_copy['PLZ'] = df_charging_stations_copy['PLZ'].astype(int)
-    df_charging_stations_copy = df_charging_stations_copy.iloc[:, 0:2]
-    df_merged = df_population_copy.merge(df_charging_stations_copy, on='PLZ', how='left')
-
-    # Fill NaN values with 0
-    df_merged['Number'] = df_merged['Number'].fillna(0)
+    df_merged = merge_geo_dataframes(df_charging_stations_copy, df_population_copy)
 
     # Streamlit app
     st.title('Heatmaps: Electric Charging Stations and Residents')
-
     
     # --------------------------------------------------------------------
     # Map Section
@@ -170,21 +213,9 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
 
     if layer_selection == "Residents":
         
-        # Create a color map for Residents using LinearColormap from branca
-        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=df_population_copy['Einwohner'].min(), vmax=df_population_copy['Einwohner'].max())
-
-        # Add polygons to the map for Residents
-        for idx, row in df_population_copy.iterrows():
-            folium.GeoJson(
-                row['geometry'],
-                style_function=lambda x, color=color_map(row['Einwohner']): {
-                    'fillColor': color,
-                    'color': 'black',
-                    'weight': 1,
-                    'fillOpacity': 0.7
-                },
-                tooltip=f"PLZ: {row['PLZ']}, Einwohner: {row['Einwohner']}"
-            ).add_to(m)
+        color_map, m = create_residents_layer(df_population_copy, m)
+        
+        
 
     elif layer_selection == "Demand":
         # Implement Demand
