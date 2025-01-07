@@ -157,9 +157,16 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     # Streamlit app
     st.title('Heatmaps: Electric Charging Stations and Residents')
 
+    # Create Columns
+    #col1, col2 = st.
+    
+    # --------------------------------------------------------------------
+    # Map Section
+    # --------------------------------------------------------------------
+
+
     # Create a radio button for layer selection
     layer_selection = st.radio("Select Layer", ("Residents", "Charging Stations", "Demand"))
-
     # Create a Folium map
     m = folium.Map(location=[52.52, 13.40], zoom_start=10)
 
@@ -297,7 +304,10 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     elif option == "Clear Suggestions":
         st.header("Input the Admin Password To Clear Suggestions")
         
-        password_input = st.text_input("Password:")
+        # Take user password
+        password_input = st.text_input("Password:", type="password")
+        
+        # Clear suggestions & Update state
         clear_suggestions(password_input.strip())
         st.session_state["suggestions"] = load_suggestions()
 
