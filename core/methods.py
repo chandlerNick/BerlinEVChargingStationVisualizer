@@ -160,7 +160,7 @@ def create_residents_layer(df_population, folium_map):
     Outputs:
         - color_map: a color_map to be added
         - folium_map: the folium_map to be drawn
-    Postconditions: The Residents layer of the streamlit map is created
+    Postconditions: The Residents layer of the folium_map is created
     '''    
     # Create a color map for Residents using LinearColormap from branca
     color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=df_population['Einwohner'].min(), vmax=df_population['Einwohner'].max())
@@ -204,10 +204,13 @@ def create_demand_layer(df_merged, folium_map):
     '''
     Creates the demand layer
     Inputs:
+        - df_merged: a dataframe containing information about the number of residents and the number of charging stations
+            In addition to the geographic data of Berlin
+        - folium_map: the empty folium_map to be populated
     Outputs:
         - color_map: a color_map to be added
         - folium_map: the folium_map to be drawn
-    Postconditions: The Demand layer of the streamlit map is created
+    Postconditions: The Demand layer of the folium_map is created
     '''
     # Create DemandMethod Object
     demander = DemandMethod()
@@ -242,6 +245,69 @@ def create_demand_layer(df_merged, folium_map):
     write_demand_formula_to_screen(demander.latex_formula, demander.latex_variables)
 
     return color_map, folium_map
+
+# -----------------------------------------------------------------------
+
+def create_charging_stations_layer(df_merged, folium_map):
+    '''
+    Creates the charging stations layer of the map
+    Inputs: 
+        - df_merged: a dataframe containing information about the number of residents and the number of charging stations
+            in addition to the geographic data of Berlin
+        - folium_map: the empty folium_map to be populated
+    Outputs:
+        - color_map: a color_map to be added
+        - folium_map: the folium_map to be drawn
+    Postconditions: The Charging Stations layer of the folium_map is created
+    '''
+    # Create a color map for Numbers
+    color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=df_merged['Number'].min(), vmax=df_merged['Number'].max())
+
+    # Add polygons to the map for Numbers
+    for idx, row in df_merged.iterrows():
+        folium.GeoJson(
+            row['geometry'],
+            style_function=lambda x, color=color_map(row['Number']): {
+                'fillColor': color,
+                'color': 'black',
+                'weight': 1,
+                'fillOpacity': 0.7
+            },
+            tooltip=f"PLZ: {row['PLZ']}, Number: {row['Number']}"
+        ).add_to(folium_map)
+
+    return color_map, folium_map
+
+# ------------------------------------------------------------------------
+
+def submit_a_suggestion(VALID_POSTAL_CODES):
+    '''
+    Writes to the JSON file a suggestion that the user wants to submit
+    Inputs: VALID_POSTAL_CODES - a list of the postal codes contained in our data
+    Outputs: None
+    Postcondition: The suggestion file is written and the streamlit app is deployed
+    '''
+    st.sidebar.header("Submit Your Suggestion")
+
+    # Text input for the suggestion
+    postal_code = st.sidebar.text_input("Enter PLZ:")
+    suggestion = st.sidebar.text_area("Write your suggestion here:")
+        
+    # Button to submit the suggestion
+    if st.sidebar.button("Submit Suggestion"):
+        if suggestion.strip() and postal_code.strip():  # Check if the suggestion is not empty
+            if postal_code.strip() in VALID_POSTAL_CODES:
+                st.session_state["suggestions"].append({
+                    "Text": suggestion.strip(),
+                    "PLZ": postal_code.strip()})
+                save_suggestions(st.sidebar.session_state["suggestions"])  # Save to file
+                st.sidebar.success("Thank you for your suggestion!")
+            else:
+                st.sidebar.error("Invalid PLZ.")
+        else:
+            st.sidebar.warning("Suggestion and PLZ cannot be empty.")
+
+
 
 
 @ht.timer
@@ -281,25 +347,10 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
 
         color_map, folium_map = create_demand_layer(df_merged, folium_map)
     
+    else:  # Must be Charging Stations
         
-    
-    else:
-        # Create a color map for Numbers
-        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=df_charging_stations_copy['Number'].min(), vmax=df_charging_stations_copy['Number'].max())
-
-        # Add polygons to the map for Numbers
-        for idx, row in df_merged.iterrows():
-            folium.GeoJson(
-                row['geometry'],
-                style_function=lambda x, color=color_map(row['Number']): {
-                    'fillColor': color,
-                    'color': 'black',
-                    'weight': 1,
-                    'fillOpacity': 0.7
-                },
-                tooltip=f"PLZ: {row['PLZ']}, Number: {row['Number']}"
-            ).add_to(folium_map)
-
+        color_map, folium_map = create_charging_stations_layer(df_merged, folium_map)
+        
     # Add color map to the map
     color_map.add_to(folium_map)
     folium_static(folium_map, width=800, height=600)
@@ -323,25 +374,8 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions", "Clear Suggestions"])
 
     if option == "Submit a Suggestion":
-        st.sidebar.header("Submit Your Suggestion")
         
-        # Text input for the suggestion
-        postal_code = st.sidebar.text_input("Enter PLZ:")
-        suggestion = st.sidebar.text_area("Write your suggestion here:")
-        
-        # Button to submit the suggestion
-        if st.sidebar.button("Submit Suggestion"):
-            if suggestion.strip() and postal_code.strip():  # Check if the suggestion is not empty
-                if postal_code.strip() in VALID_POSTAL_CODES:
-                    st.session_state["suggestions"].append({
-                        "Text": suggestion.strip(),
-                        "PLZ": postal_code.strip()})
-                    save_suggestions(st.sidebar.session_state["suggestions"])  # Save to file
-                    st.sidebar.success("Thank you for your suggestion!")
-                else:
-                    st.sidebar.error("Invalid PLZ.")
-            else:
-                st.sidebar.warning("Suggestion and PLZ cannot be empty.")
+        submit_a_suggestion(VALID_POSTAL_CODES)
 
     elif option == "View Suggestions":
         st.sidebar.header("Suggestions List")
