@@ -308,7 +308,60 @@ def submit_a_suggestion(VALID_POSTAL_CODES):
             st.sidebar.warning("Suggestion and PLZ cannot be empty.")
 
 
+# -----------------------------------------------------------------------
 
+def view_suggestions():
+    '''
+    Allows the user to view suggestions and filter by PLZ
+    Inputs: None
+    Outputs: None
+    Postconditions: The session state suggestions is read and the suggestions are displayed
+        with the option to filter by PLZ
+    '''
+    st.sidebar.header("Suggestions List")
+        
+    if st.session_state["suggestions"]:
+        # Input for filtering by postal code
+        filter_postal_code = st.sidebar.text_input("Filter by postal code")
+ 
+        # Filter or sort suggestions based on postal code
+        filtered_suggestions = (
+            sorted(st.session_state["suggestions"], key = lambda x: x["PLZ"])
+            if not filter_postal_code
+            else [
+                s for s in st.session_state["suggestions"]
+                if s["PLZ"] == filter_postal_code.strip()
+            ]
+        )
+            
+        # Display each suggestion
+        if filtered_suggestions:
+            for i, suggestion in enumerate(filtered_suggestions, 1):
+                st.sidebar.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
+        else:
+            st.sidebar.info("No suggestions match the given postal code.")
+    else:
+        st.sidebar.info("No suggestions have been submitted yet.")
+
+# -----------------------------------------------------------------------
+
+def clear_suggestions():
+    '''
+    Takes a user password, and when correct, wipes the JSON file storing suggestions
+    Inputs: None
+    Outputs: None
+    Postconditions: The JSON file storing suggestions is cleared and the session state is updated if the password is correct
+    '''
+    st.sidebar.header("Input the Admin Password To Clear Suggestions")
+        
+    # Take user password
+    password_input = st.sidebar.text_input("Password:", type="password")
+        
+    # Clear suggestions & Update state
+    clear_suggestions(password_input.strip())
+    st.session_state["suggestions"] = load_suggestions()
+
+# -----------------------------------------------------------------------
 
 @ht.timer
 def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
@@ -378,38 +431,10 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         submit_a_suggestion(VALID_POSTAL_CODES)
 
     elif option == "View Suggestions":
-        st.sidebar.header("Suggestions List")
         
-        if st.session_state["suggestions"]:
-            # Input for filtering by postal code
-            filter_postal_code = st.sidebar.text_input("Filter by postal code")
- 
-            # Filter or sort suggestions based on postal code
-            filtered_suggestions = (
-                sorted(st.session_state["suggestions"], key = lambda x: x["PLZ"])
-                if not filter_postal_code
-                else [
-                    s for s in st.session_state["suggestions"]
-                    if s["PLZ"] == filter_postal_code.strip()
-                ]
-            )
-            
-            # Display each suggestion
-            if filtered_suggestions:
-                for i, suggestion in enumerate(filtered_suggestions, 1):
-                    st.sidebar.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
-            else:
-                st.sidebar.info("No suggestions match the given postal code.")
-        else:
-            st.sidebar.info("No suggestions have been submitted yet.")
+        view_suggestions()
     
     elif option == "Clear Suggestions":
-        st.sidebar.header("Input the Admin Password To Clear Suggestions")
-        
-        # Take user password
-        password_input = st.sidebar.text_input("Password:", type="password")
-        
-        # Clear suggestions & Update state
-        clear_suggestions(password_input.strip())
-        st.session_state["suggestions"] = load_suggestions()
+
+        clear_suggestions()
 
