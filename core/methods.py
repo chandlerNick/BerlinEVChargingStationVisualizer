@@ -366,6 +366,8 @@ def clear_suggestions():
     clear_suggestions(password_input.strip())
     st.session_state["suggestions"] = load_suggestions()
     st.sidebar.empty()
+    if password_input.strip() == "AnimalC00kies?":
+        st.sidebar.write("Password Accepted")
     st.sidebar.info("Suggestions cleared")
 
 # -----------------------------------------------------------------------
