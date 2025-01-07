@@ -323,7 +323,7 @@ def view_suggestions():
     '''
     st.sidebar.header("Suggestions List")
     
-    st.session_state["suggestions"] = load_suggestions()
+    #st.session_state["suggestions"] = load_suggestions()
     
     if st.session_state["suggestions"]:
         # Input for filtering by postal code
@@ -428,9 +428,6 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     # Load suggestions into memory
     if "suggestions" not in st.session_state:
         st.session_state["suggestions"] = load_suggestions()
-
-    # Placeholder for display of suggestions
-    placeholder = st.empty()
 
     # Sidebar menu
     option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions", "Clear Suggestions"])
