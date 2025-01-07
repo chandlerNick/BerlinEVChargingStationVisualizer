@@ -220,7 +220,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
             r"\frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}\newline\newline"
             r"""
             \\
-            \begin{array}{rl}
+            \begin{array}{ll}
             \text{E} = \text{Electric vehicles per resident}\\
             
             \text{P} = \text{Population per PLZ}\\
