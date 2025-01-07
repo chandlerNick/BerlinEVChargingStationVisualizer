@@ -15,7 +15,12 @@ from config                          import pdict
 # -----------------------------------------------------------------------------
 @ht.timer
 def main():
-    """Main: Generation of Streamlit App for visualizing electric charging stations & residents in Berlin"""
+    """
+    Main: Generation of Streamlit App for visualizing electric charging stations & residents in Berlin
+    Inputs: None
+    Outputs: None
+    Postconditions: Data is read in, processed, and the streamlit app is generated
+    """
 
 
     # Load in the respective datasets

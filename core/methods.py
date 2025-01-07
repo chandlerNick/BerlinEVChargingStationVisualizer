@@ -18,6 +18,14 @@ from core.suggestions_methods.SuggestionsMethods import initialize_file, load_su
 # -----------------------------------------------------------------------
 
 def sort_by_plz_add_geometry(dfr, dfg, pdict):
+    '''
+    Inputs:
+        - dfr: 
+        - dfg: 
+        - pdict:
+    Outputs: 
+    Postconditions: None
+    '''
     dframe = dfr.copy()
     df_geo = dfg.copy()
     
@@ -115,7 +123,9 @@ def preprop_resid(dfr, dfg, pdict):
 def make_streamlit_electric_Charging_resid(dfr1, dfr2):
     """
     Makes Streamlit App with Heatmap of Electric Charging Stations and Residents
-    Inputs: dfr1 - , dfr2 -
+    Inputs: 
+        - dfr1: 
+        - dfr2: 
     Outputs: None
     Postconditions: Streamlit app is built and deployed
     """
