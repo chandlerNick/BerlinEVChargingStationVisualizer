@@ -362,7 +362,7 @@ def clear_suggestions():
         
     # Clear suggestions & Update state
     clear_suggestions(password_input.strip())
-    st.session_state["suggestions"] = load_suggestions()
+    
 
 # -----------------------------------------------------------------------
 
@@ -440,4 +440,4 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     elif option == "Clear Suggestions":
 
         clear_suggestions()
-
+        st.session_state["suggestions"] = load_suggestions()
