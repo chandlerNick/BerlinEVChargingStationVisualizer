@@ -10,7 +10,7 @@ from branca.colormap import LinearColormap
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from core.demand_methods.DemandMethods import robert_demands
+from core.demand_methods.DemandMethods import DemandMethod
 from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions
 
 
@@ -183,6 +183,23 @@ def create_residents_layer(df_population, folium_map):
 
 # ------------------------------------------------------------------------
 
+def write_demand_formula_to_screen(formula, variables):
+    '''
+    Writes the two latex statments to the screen
+    Inputs:
+        - Formula denoting how the demand function is constructed
+        - Variables specifying the parts of the demand function
+    Outputs: None
+    Postconditions: Demand formula is written to the screen
+    '''
+    st.text("Demand Formula")
+    st.latex(formula)
+    st.text("Constituent Variables")
+    st.latex(variables)
+
+
+# ------------------------------------------------------------------------
+
 def create_demand_layer(df_merged, folium_map):
     '''
     Creates the demand layer
@@ -192,8 +209,11 @@ def create_demand_layer(df_merged, folium_map):
         - folium_map: the folium_map to be drawn
     Postconditions: The Demand layer of the streamlit map is created
     '''
+    # Create DemandMethod Object
+    demander = DemandMethod()
+    
     # Implement Demand
-    df_merged['Demand'] = robert_demands(df_merged['Number'], df_merged['Einwohner'])
+    df_merged['Demand'] = demander.robert_demands(df_merged['Number'], df_merged['Einwohner'])
         
     # Create colormap for demand
     mininmum_demand = df_merged['Demand'].min()
@@ -218,27 +238,9 @@ def create_demand_layer(df_merged, folium_map):
             tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
         ).add_to(folium_map)
             
-    # Add formula for demand function
-    latex_formula = r"\text{Demand} = \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}\newline\newline"
-    latex_variables = r"""
-        \\
-        \begin{array}{ll}
-        \text{E} = \text{Electric vehicles per resident}\\
-            
-        \text{P} = \text{Population per PLZ}\\
-            
-        \text{EVPCS} = \text{Electric vehicles per charging station}\newline
-            
-        \text{CS} = \text{Charging stations that exist in the PLZ}
-        \end{array}
-    """
+    # Write DemandMethod formula to screen
+    write_demand_formula_to_screen(demander.latex_formula, demander.latex_variables)
 
-    # Write all to screen
-    st.text("Demand Formula")
-    st.latex(latex_formula)
-    st.text("Constituent Variables")
-    st.latex(latex_variables)
-    
     return color_map, folium_map
 
 
@@ -278,6 +280,8 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     elif layer_selection == "Demand":
 
         color_map, folium_map = create_demand_layer(df_merged, folium_map)
+    
+        
     
     else:
         # Create a color map for Numbers
