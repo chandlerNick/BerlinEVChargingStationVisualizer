@@ -313,10 +313,10 @@ def submit_a_suggestion(VALID_POSTAL_CODES):
 
 # -----------------------------------------------------------------------
 
-def view_suggestions():
+def view_suggestions(placeholder):
     '''
     Allows the user to view suggestions and filter by PLZ
-    Inputs: None
+    Inputs: an st.empty() object
     Outputs: None
     Postconditions: The session state suggestions is read and the suggestions are displayed
         with the option to filter by PLZ
@@ -340,7 +340,7 @@ def view_suggestions():
         # Display each suggestion
         if filtered_suggestions:
             for i, suggestion in enumerate(filtered_suggestions, 1):
-                st.sidebar.text(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
+                placeholder.sidebar.text(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
         else:
             st.sidebar.info("No suggestions match the given postal code.")
     else:
@@ -348,10 +348,10 @@ def view_suggestions():
 
 # -----------------------------------------------------------------------
 
-def clear_suggestions():
+def clear_suggestions(placeholder):
     '''
     Takes a user password, and when correct, wipes the JSON file storing suggestions
-    Inputs: None
+    Inputs: a placeholder to clear the suggestions
     Outputs: None
     Postconditions: The JSON file storing suggestions is cleared and the session state is updated if the password is correct
     '''
@@ -362,7 +362,8 @@ def clear_suggestions():
         
     # Clear suggestions & Update state
     clear_suggestions(password_input.strip())
-    
+    st.session_state["suggestions"] = load_suggestions()
+    placeholder.empty()
 
 # -----------------------------------------------------------------------
 
@@ -426,6 +427,9 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     if "suggestions" not in st.session_state:
         st.session_state["suggestions"] = load_suggestions()
 
+    # Placeholder for display of suggestions
+    placeholder = st.empty()
+
     # Sidebar menu
     option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions", "Clear Suggestions"])
 
@@ -435,10 +439,9 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
 
     elif option == "View Suggestions":
         
-        view_suggestions()
+        view_suggestions(placeholder)
     
     elif option == "Clear Suggestions":
 
-        clear_suggestions()
-        st.session_state["suggestions"] = None
-        st.session_state["suggestions"] = load_suggestions()
+        clear_suggestions(placeholder)
+        
