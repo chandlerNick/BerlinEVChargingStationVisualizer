@@ -219,6 +219,8 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         latex_list = [        
             r"\frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}\newline\newline"
             r"""
+            \vspace{20px}
+            \begin{array}{rl}
             \text{E} = \text{Electric vehicles per resident}\\
             
             \text{P} = \text{Population per PLZ}\\
@@ -226,6 +228,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
             \text{EVPCS} = \text{Electric vehicles per charging station}\newline
             
             \text{CS} = \text{Charging stations that exist in the PLZ}
+            \end{array}
             """
         ]
 
