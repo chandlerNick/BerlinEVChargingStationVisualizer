@@ -6,6 +6,7 @@
 import json
 from pathlib import Path
 import os
+import streamlit as st
 
 
 # Define the path to the suggestions file
@@ -35,6 +36,7 @@ def clear_suggestions(password:str):
     '''
     if password == "AnimalC00kies?":  # This is the password in plaintext, what are the secure dev practices?
         overwrite_file()
+        st.info("Password Accepted")
 
 
 # -----------------------------------------------------------------------

@@ -366,6 +366,7 @@ def clear_suggestions():
     clear_suggestions(password_input.strip())
     st.session_state["suggestions"] = load_suggestions()
     st.sidebar.empty()
+    st.info("Suggestions cleared")
 
 # -----------------------------------------------------------------------
 
