@@ -250,23 +250,42 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         
         # Text input for the suggestion
         suggestion = st.text_area("Write your suggestion here:")
+        postal_code = st.text_input("Enter postal code (e.g., 10115):")
         
         # Button to submit the suggestion
         if st.button("Submit Suggestion"):
             if suggestion.strip():  # Check if the suggestion is not empty
-                st.session_state["suggestions"].append(suggestion.strip())
+                st.session_state["suggestions"].append({
+                    "Text": suggestion.strip(),
+                    "PLZ": postal_code.strip()})
                 save_suggestions(st.session_state["suggestions"])  # Save to file
                 st.success("Thank you for your suggestion!")
             else:
-                st.warning("Suggestion cannot be empty.")
+                st.warning("Suggestion and PLZ cannot be empty.")
 
     elif option == "View Suggestions":
         st.header("Suggestions List")
         
         if st.session_state["suggestions"]:
+            # Input for filtering by postal code
+            filter_postal_code = st.text_input("Filter by postal code (optional):")
+            
+            # Filter or sort suggestions based on postal code
+            filtered_suggestions = (
+                sorted(st.session_state["suggestions"], key = lambda x: x["PLZ"])
+                if not filter_postal_code
+                else [
+                    s for s in st.session_state["suggestions"]
+                    if s["PLZ"] == filter_postal_code.strip()
+                ]
+            )
+            
             # Display each suggestion
-            for i, suggestion in enumerate(st.session_state["suggestions"], 1):
-                st.write(f"{i}. {suggestion}")
+            if filtered_suggestions:
+                for i, suggestion in enumerate(st.session_state["suggestions"], 1):
+                    st.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
+            else:
+                st.info("No suggestions match the given postal code.")
         else:
             st.info("No suggestions have been submitted yet.")
 
