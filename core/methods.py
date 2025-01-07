@@ -257,7 +257,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         # Button to submit the suggestion
         if st.button("Submit Suggestion"):
             if suggestion.strip() and postal_code.strip():  # Check if the suggestion is not empty
-                if int(postal_code.strip()) in VALID_POSTAL_CODES:
+                if postal_code.strip() in VALID_POSTAL_CODES:
                     st.session_state["suggestions"].append({
                         "Text": suggestion.strip(),
                         "PLZ": postal_code.strip()})
