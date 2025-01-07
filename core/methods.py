@@ -157,159 +157,155 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     # Streamlit app
     st.title('Heatmaps: Electric Charging Stations and Residents')
 
-    # Create Columns
-    col1, col2 = st.columns([2, 1])
+    
+    # --------------------------------------------------------------------
+    # Map Section
+    # --------------------------------------------------------------------
+
+
+    # Create a radio button for layer selection
+    layer_selection = st.radio("Select Layer", ("Residents", "Charging Stations", "Demand"))
+    # Create a Folium map
+    m = folium.Map(location=[52.52, 13.40], zoom_start=10)
+
+    if layer_selection == "Residents":
+        
+        # Create a color map for Residents using LinearColormap from branca
+        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=df_population_copy['Einwohner'].min(), vmax=df_population_copy['Einwohner'].max())
+
+        # Add polygons to the map for Residents
+        for idx, row in df_population_copy.iterrows():
+            folium.GeoJson(
+                row['geometry'],
+                style_function=lambda x, color=color_map(row['Einwohner']): {
+                    'fillColor': color,
+                    'color': 'black',
+                    'weight': 1,
+                    'fillOpacity': 0.7
+                },
+                tooltip=f"PLZ: {row['PLZ']}, Einwohner: {row['Einwohner']}"
+            ).add_to(m)
+
+    elif layer_selection == "Demand":
+        # Implement Demand
+        df_merged['Demand'] = robert_demands(df_merged['Number'], df_merged['Einwohner'])
+        
+        # Create colormap for demand
+        mininmum_demand = df_merged['Demand'].min()
+        maximum_demand = df_merged['Demand'].max()
+        color_map = LinearColormap(
+            colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
+            vmin=mininmum_demand, 
+            vmax=maximum_demand
+        )
+        color_map = color_map.scale(vmin=mininmum_demand, vmax=maximum_demand)
+
+        # Add polygons to the map for Demand
+        for idx, row in df_merged.iterrows():
+            folium.GeoJson(
+                row['geometry'],
+                style_function=lambda x, color=color_map(row['Demand']): {
+                    'fillColor': color,
+                    'color': 'black',
+                    'weight': 1,
+                    'fillOpacity': 0.7
+                },
+                tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
+            ).add_to(m)
+    
+    else:
+        # Create a color map for Numbers
+        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
+
+        # Add polygons to the map for Numbers
+        for idx, row in df_merged.iterrows():
+            folium.GeoJson(
+                row['geometry'],
+                style_function=lambda x, color=color_map(row['Number']): {
+                    'fillColor': color,
+                    'color': 'black',
+                    'weight': 1,
+                    'fillOpacity': 0.7
+                },
+                tooltip=f"PLZ: {row['PLZ']}, Number: {row['Number']}"
+            ).add_to(m)
+
+    # Add color map to the map
+    color_map.add_to(m)
+    
+    folium_static(m, width=800, height=600)
     
     
-    with col1:
-        # --------------------------------------------------------------------
-        # Map Section
-        # --------------------------------------------------------------------
-
-
-        # Create a radio button for layer selection
-        layer_selection = st.radio("Select Layer", ("Residents", "Charging Stations", "Demand"))
-        # Create a Folium map
-        m = folium.Map(location=[52.52, 13.40], zoom_start=10)
-
-        if layer_selection == "Residents":
-            
-            # Create a color map for Residents using LinearColormap from branca
-            color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=df_population_copy['Einwohner'].min(), vmax=df_population_copy['Einwohner'].max())
-
-            # Add polygons to the map for Residents
-            for idx, row in df_population_copy.iterrows():
-                folium.GeoJson(
-                    row['geometry'],
-                    style_function=lambda x, color=color_map(row['Einwohner']): {
-                        'fillColor': color,
-                        'color': 'black',
-                        'weight': 1,
-                        'fillOpacity': 0.7
-                    },
-                    tooltip=f"PLZ: {row['PLZ']}, Einwohner: {row['Einwohner']}"
-                ).add_to(m)
-
-        elif layer_selection == "Demand":
-            # Implement Demand
-            df_merged['Demand'] = robert_demands(df_merged['Number'], df_merged['Einwohner'])
-            
-            # Create colormap for demand
-            mininmum_demand = df_merged['Demand'].min()
-            maximum_demand = df_merged['Demand'].max()
-            color_map = LinearColormap(
-                colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
-                vmin=mininmum_demand, 
-                vmax=maximum_demand
-            )
-            color_map = color_map.scale(vmin=mininmum_demand, vmax=maximum_demand)
-
-            # Add polygons to the map for Demand
-            for idx, row in df_merged.iterrows():
-                folium.GeoJson(
-                    row['geometry'],
-                    style_function=lambda x, color=color_map(row['Demand']): {
-                        'fillColor': color,
-                        'color': 'black',
-                        'weight': 1,
-                        'fillOpacity': 0.7
-                    },
-                    tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
-                ).add_to(m)
-        
-        else:
-            # Create a color map for Numbers
-            color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'orange', 'red', 'magenta'], vmin=dframe1['Number'].min(), vmax=dframe1['Number'].max())
-
-            # Add polygons to the map for Numbers
-            for idx, row in df_merged.iterrows():
-                folium.GeoJson(
-                    row['geometry'],
-                    style_function=lambda x, color=color_map(row['Number']): {
-                        'fillColor': color,
-                        'color': 'black',
-                        'weight': 1,
-                        'fillOpacity': 0.7
-                    },
-                    tooltip=f"PLZ: {row['PLZ']}, Number: {row['Number']}"
-                ).add_to(m)
-
-        # Add color map to the map
-        color_map.add_to(m)
-        
-        folium_static(m, width=800, height=600)
+    # ---------------------------------------------------------------------------------------------------------------------
+    # Suggestions section
+    # ---------------------------------------------------------------------------------------------------------------------
+    VALID_POSTAL_CODES = df_charging_stations_copy['PLZ'].astype(str).tolist()
     
-    with col2:
-        # ---------------------------------------------------------------------------------------------------------------------
-        # Suggestions section
-        # ---------------------------------------------------------------------------------------------------------------------
-        VALID_POSTAL_CODES = df_charging_stations_copy['PLZ'].astype(str).tolist()
-        
-        
-        # Call the init file method (creates the file if it doesn't yet exist)
-        initialize_file()
-        
-        # Load suggestions into memory
-        if "suggestions" not in st.session_state:
-            st.session_state["suggestions"] = load_suggestions()
+    
+    # Call the init file method (creates the file if it doesn't yet exist)
+    initialize_file()
+    
+    # Load suggestions into memory
+    if "suggestions" not in st.session_state:
+        st.session_state["suggestions"] = load_suggestions()
 
-        # Sidebar menu
-        option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions", "Clear Suggestions"])
+    # Sidebar menu
+    option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions", "Clear Suggestions"])
 
-        if option == "Submit a Suggestion":
-            st.header("Submit Your Suggestion")
-            
-            # Text input for the suggestion
-            postal_code = st.text_input("Enter PLZ:")
-            suggestion = st.text_area("Write your suggestion here:")
-            
-            # Button to submit the suggestion
-            if st.button("Submit Suggestion"):
-                if suggestion.strip() and postal_code.strip():  # Check if the suggestion is not empty
-                    if postal_code.strip() in VALID_POSTAL_CODES:
-                        st.session_state["suggestions"].append({
-                            "Text": suggestion.strip(),
-                            "PLZ": postal_code.strip()})
-                        save_suggestions(st.session_state["suggestions"])  # Save to file
-                        st.success("Thank you for your suggestion!")
-                    else:
-                        st.error("Invalid PLZ.")
+    if option == "Submit a Suggestion":
+        st.header("Submit Your Suggestion")
+        
+        # Text input for the suggestion
+        postal_code = st.text_input("Enter PLZ:")
+        suggestion = st.text_area("Write your suggestion here:")
+        
+        # Button to submit the suggestion
+        if st.button("Submit Suggestion"):
+            if suggestion.strip() and postal_code.strip():  # Check if the suggestion is not empty
+                if postal_code.strip() in VALID_POSTAL_CODES:
+                    st.session_state["suggestions"].append({
+                        "Text": suggestion.strip(),
+                        "PLZ": postal_code.strip()})
+                    save_suggestions(st.session_state["suggestions"])  # Save to file
+                    st.success("Thank you for your suggestion!")
                 else:
-                    st.warning("Suggestion and PLZ cannot be empty.")
-
-        elif option == "View Suggestions":
-            st.header("Suggestions List")
-            
-            if st.session_state["suggestions"]:
-                # Input for filtering by postal code
-                filter_postal_code = st.text_input("Filter by postal code")
-    
-                # Filter or sort suggestions based on postal code
-                filtered_suggestions = (
-                    sorted(st.session_state["suggestions"], key = lambda x: x["PLZ"])
-                    if not filter_postal_code
-                    else [
-                        s for s in st.session_state["suggestions"]
-                        if s["PLZ"] == filter_postal_code.strip()
-                    ]
-                )
-                
-                # Display each suggestion
-                if filtered_suggestions:
-                    for i, suggestion in enumerate(filtered_suggestions, 1):
-                        st.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
-                else:
-                    st.info("No suggestions match the given postal code.")
+                    st.error("Invalid PLZ.")
             else:
-                st.info("No suggestions have been submitted yet.")
+                st.warning("Suggestion and PLZ cannot be empty.")
+
+    elif option == "View Suggestions":
+        st.header("Suggestions List")
         
-        elif option == "Clear Suggestions":
-            st.header("Input the Admin Password To Clear Suggestions")
+        if st.session_state["suggestions"]:
+            # Input for filtering by postal code
+            filter_postal_code = st.text_input("Filter by postal code")
+ 
+            # Filter or sort suggestions based on postal code
+            filtered_suggestions = (
+                sorted(st.session_state["suggestions"], key = lambda x: x["PLZ"])
+                if not filter_postal_code
+                else [
+                    s for s in st.session_state["suggestions"]
+                    if s["PLZ"] == filter_postal_code.strip()
+                ]
+            )
             
-            # Take user password
-            password_input = st.text_input("Password:", type="password")
-            
-            # Clear suggestions & Update state
-            clear_suggestions(password_input.strip())
-            st.session_state["suggestions"] = load_suggestions()
+            # Display each suggestion
+            if filtered_suggestions:
+                for i, suggestion in enumerate(filtered_suggestions, 1):
+                    st.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
+            else:
+                st.info("No suggestions match the given postal code.")
+        else:
+            st.info("No suggestions have been submitted yet.")
+    
+    elif option == "Clear Suggestions":
+        st.header("Input the Admin Password To Clear Suggestions")
+        
+        # Take user password
+        password_input = st.text_input("Password:", type="password")
+        
+        # Clear suggestions & Update state
+        clear_suggestions(password_input.strip())
+        st.session_state["suggestions"] = load_suggestions()
 
