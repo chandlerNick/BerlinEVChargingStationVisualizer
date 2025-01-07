@@ -227,7 +227,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
         \end{itemize}
         '''
         st.text("Demand Formula")
-        st.latex(latex_expression)
+        st.markdown(latex_expression)
             
     
     else:
