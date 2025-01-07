@@ -158,8 +158,8 @@ def create_residents_layer(df_population, folium_map):
         - df_population: A geodataframe with location and population information
         - folium_map: The folium map on which to draw the desired population map
     Outputs:
-        - color_map: a color_map to be plotted
-        - folium_map: the folium_map to be added
+        - color_map: a color_map to be added
+        - folium_map: the folium_map to be drawn
     Postconditions: The Residents layer of the streamlit map is created
     '''    
     # Create a color map for Residents using LinearColormap from branca
@@ -178,7 +178,67 @@ def create_residents_layer(df_population, folium_map):
             tooltip=f"PLZ: {row['PLZ']}, Einwohner: {row['Einwohner']}"
         ).add_to(folium_map)
 
+    return color_map, folium_map
 
+
+# ------------------------------------------------------------------------
+
+def create_demand_layer(df_merged, folium_map):
+    '''
+    Creates the demand layer
+    Inputs:
+    Outputs:
+        - color_map: a color_map to be added
+        - folium_map: the folium_map to be drawn
+    Postconditions: The Demand layer of the streamlit map is created
+    '''
+    # Implement Demand
+    df_merged['Demand'] = robert_demands(df_merged['Number'], df_merged['Einwohner'])
+        
+    # Create colormap for demand
+    mininmum_demand = df_merged['Demand'].min()
+    maximum_demand = df_merged['Demand'].max()
+    color_map = LinearColormap(
+        colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
+        vmin=mininmum_demand, 
+        vmax=maximum_demand
+    )
+    color_map = color_map.scale(vmin=mininmum_demand, vmax=maximum_demand)
+
+    # Add polygons to the map for Demand
+    for idx, row in df_merged.iterrows():
+        folium.GeoJson(
+            row['geometry'],
+            style_function=lambda x, color=color_map(row['Demand']): {
+                'fillColor': color,
+                'color': 'black',
+                'weight': 1,
+                'fillOpacity': 0.7
+            },
+            tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
+        ).add_to(folium_map)
+            
+    # Add formula for demand function
+    latex_formula = r"\text{Demand} = \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}\newline\newline"
+    latex_variables = r"""
+        \\
+        \begin{array}{ll}
+        \text{E} = \text{Electric vehicles per resident}\\
+            
+        \text{P} = \text{Population per PLZ}\\
+            
+        \text{EVPCS} = \text{Electric vehicles per charging station}\newline
+            
+        \text{CS} = \text{Charging stations that exist in the PLZ}
+        \end{array}
+    """
+
+    # Write all to screen
+    st.text("Demand Formula")
+    st.latex(latex_formula)
+    st.text("Constituent Variables")
+    st.latex(latex_variables)
+    
     return color_map, folium_map
 
 
@@ -209,63 +269,15 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     # Create a radio button for layer selection
     layer_selection = st.radio("Select Layer", ("Residents", "Charging Stations", "Demand"))
     # Create a Folium map
-    m = folium.Map(location=[52.52, 13.40], zoom_start=10)
+    folium_map = folium.Map(location=[52.52, 13.40], zoom_start=10)
 
     if layer_selection == "Residents":
         
-        color_map, m = create_residents_layer(df_population_copy, m)
-        
-        
+        color_map, folium_map = create_residents_layer(df_population_copy, folium_map)
 
     elif layer_selection == "Demand":
-        # Implement Demand
-        df_merged['Demand'] = robert_demands(df_merged['Number'], df_merged['Einwohner'])
-        
-        # Create colormap for demand
-        mininmum_demand = df_merged['Demand'].min()
-        maximum_demand = df_merged['Demand'].max()
-        color_map = LinearColormap(
-            colors=["darkblue", "darkblue", "blue", "blue", "lightblue", "lightblue", "red", "red"], 
-            vmin=mininmum_demand, 
-            vmax=maximum_demand
-        )
-        color_map = color_map.scale(vmin=mininmum_demand, vmax=maximum_demand)
 
-        # Add polygons to the map for Demand
-        for idx, row in df_merged.iterrows():
-            folium.GeoJson(
-                row['geometry'],
-                style_function=lambda x, color=color_map(row['Demand']): {
-                    'fillColor': color,
-                    'color': 'black',
-                    'weight': 1,
-                    'fillOpacity': 0.7
-                },
-                tooltip=f"PLZ: {row['PLZ']}, Demand: {row['Demand']}"
-            ).add_to(m)
-            
-            
-
-        # Add formula for demand function
-        latex_formula = r"\text{Demand} = \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}\newline\newline"
-        latex_variables = r"""
-            \\
-            \begin{array}{ll}
-            \text{E} = \text{Electric vehicles per resident}\\
-            
-            \text{P} = \text{Population per PLZ}\\
-            
-            \text{EVPCS} = \text{Electric vehicles per charging station}\newline
-            
-            \text{CS} = \text{Charging stations that exist in the PLZ}
-            \end{array}
-        """
-
-        # Write all to screen
-        st.text("Demand Formula")
-        st.latex(latex_formula)
-        st.text("Constituent Variables")
-        st.latex(latex_variables)
+        color_map, folium_map = create_demand_layer(df_merged, folium_map)
     
     else:
         # Create a color map for Numbers
@@ -282,11 +294,11 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
                     'fillOpacity': 0.7
                 },
                 tooltip=f"PLZ: {row['PLZ']}, Number: {row['Number']}"
-            ).add_to(m)
+            ).add_to(folium_map)
 
     # Add color map to the map
-    color_map.add_to(m)
-    folium_static(m, width=800, height=600)
+    color_map.add_to(folium_map)
+    folium_static(folium_map, width=800, height=600)
     
 
     
