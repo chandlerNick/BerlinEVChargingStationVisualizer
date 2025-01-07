@@ -216,13 +216,17 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
             
 
         # Add formula for demand function
-        latex_expression = r'''
-        \frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}
-        '''
+        latex_list = [        
+            r"\frac{\text{EV}\cdot \text{P}}{\text{EVPCS}} - \text{CS}"
+            r"\text{E} = \text{Electric vehicles per resident}",
+            r"\text{P} = \text{Population per PLZ}",
+            r"\text{EVPCS} = \text{Electric vehicles per charging station}",
+            r"\text{CS} = \text{Charging stations that exist in the PLZ}"
+        ]
 
         st.text("Demand Formula")
-        st.markdown(latex_expression)
-            
+        for latex_expr in latex_list:
+            st.latex(latex_expr)
     
     else:
         # Create a color map for Numbers
