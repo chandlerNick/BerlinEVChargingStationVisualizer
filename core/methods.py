@@ -166,7 +166,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     if layer_selection == "Residents":
         
         # Create a color map for Residents using LinearColormap from branca
-        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=df_register_input['Einwohner'].min(), vmax=df_register_input['Einwohner'].max())
+        color_map = LinearColormap(colors=['blue', 'green', 'yellow', 'red'], vmin=df_population_copy['Einwohner'].min(), vmax=df_population_copy['Einwohner'].max())
 
         # Add polygons to the map for Residents
         for idx, row in df_population_copy.iterrows():
