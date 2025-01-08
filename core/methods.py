@@ -342,7 +342,7 @@ def view_suggestions():
         # Display each suggestion
         if filtered_suggestions:
             for i, suggestion in enumerate(filtered_suggestions, 1):
-                st.sidebar.write(f"{i}. {suggestion["Text"]} - PLZ: {suggestion["PLZ"]}")
+                st.sidebar.write(f"{i}. {suggestion['Text']} - PLZ: {suggestion['PLZ']}")
         else:
             st.sidebar.info("No suggestions match the given postal code.")
     else:
@@ -364,8 +364,9 @@ def clear_suggestions():
         
     # Clear suggestions & Update state
     clear_suggestions(password_input)
-    st.session_state["suggestions"] = load_suggestions()
     st.sidebar.empty()
+    st.session_state["suggestions"] = load_suggestions()
+    
 
 # -----------------------------------------------------------------------
 
