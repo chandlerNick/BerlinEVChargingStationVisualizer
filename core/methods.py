@@ -360,7 +360,7 @@ def clear_suggestions():
     st.sidebar.header("Input the Admin Password To Clear Suggestions")
         
     # Take user password
-    password_input = st.sidebar.text_input("Password:", type="password")
+    password_input = str(st.sidebar.text_input("Password:", type="password").strip())
         
     # Clear suggestions & Update state
     clear_suggestions(password_input)
