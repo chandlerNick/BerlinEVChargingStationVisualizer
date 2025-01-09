@@ -206,7 +206,7 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     
     
     # Call the init file method (creates the file if it doesn't yet exist)
-    initialize_file()
+    initialize_suggestions_file()
     
     # Load suggestions into memory
     if "suggestions" not in st.session_state:
