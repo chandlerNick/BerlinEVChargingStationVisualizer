@@ -303,7 +303,7 @@ def submit_a_suggestion(VALID_POSTAL_CODES):
                 st.session_state["suggestions"].append({
                     "Text": suggestion.strip(),
                     "PLZ": postal_code.strip()})
-                save_suggestions(st.sidebar.session_state["suggestions"])  # Save to file
+                save_suggestions(st.session_state["suggestions"])  # Save to file
                 st.sidebar.success("Thank you for your suggestion!")
             else:
                 st.sidebar.error("Invalid PLZ.")
