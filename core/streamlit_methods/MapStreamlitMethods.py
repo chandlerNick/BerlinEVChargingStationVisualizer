@@ -8,6 +8,7 @@ import streamlit as st
 from streamlit_folium import folium_static
 from branca.colormap import LinearColormap
 import geopandas as gpd
+from core.demand_methods.DemandMethods import DemandMethod
 
 
 def create_residents_layer(df_population, folium_map):
