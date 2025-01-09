@@ -14,6 +14,7 @@ from core.demand_methods.DemandMethods import DemandMethod
 from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions_file
 
 
+# It works!
 
 # -----------------------------------------------------------------------
 
