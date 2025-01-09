@@ -1,8 +1,7 @@
-# Methods associated suggestions that deploy the streamlit app
-
+# Methods associated suggestions that help deploy the streamlit app
 
 import streamlit as st
-from SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions_file
+from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions_file
 
 
 def submit_a_suggestion(VALID_POSTAL_CODES):
