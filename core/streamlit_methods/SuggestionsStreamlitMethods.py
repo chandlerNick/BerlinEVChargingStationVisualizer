@@ -32,7 +32,7 @@ def submit_a_suggestion(VALID_POSTAL_CODES):
             st.sidebar.warning("Suggestion and PLZ cannot be empty.")
 
 
-# -----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
 def view_suggestions():
     '''
