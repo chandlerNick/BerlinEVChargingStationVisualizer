@@ -65,7 +65,7 @@ def load_suggestions():
         - Loaded JSON if the SUGGESTIONS_FILE does exist
     Postconditions: The SUGGESTIONS_FILE is loaded if it exists
     '''
-    initialize_file()
+    initialize_suggestions_file()
     if Path(SUGGESTIONS_FILE).exists():
         with open(SUGGESTIONS_FILE, "r") as file:
             return json.load(file)
