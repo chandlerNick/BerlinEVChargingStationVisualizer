@@ -11,7 +11,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from core.demand_methods.DemandMethods import DemandMethod
-from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions
+from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions_file
 
 
 
@@ -363,7 +363,7 @@ def clear_suggestions():
     password_input = str(st.sidebar.text_input("Password:", type="password").strip())
         
     # Clear suggestions & Update state
-    clear_suggestions(password_input)
+    clear_suggestions_file(password_input)
     st.sidebar.empty()
     st.session_state["suggestions"] = load_suggestions()
     

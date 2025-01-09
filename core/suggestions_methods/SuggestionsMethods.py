@@ -27,7 +27,7 @@ def overwrite_file():
 
 # ----------------------------------------------------------------------
 
-def clear_suggestions(password):
+def clear_suggestions_file(password):
     '''
     If the password matches, we can wipe the suggestions file
     Inputs: password, a string that is input on the streamlit UI
