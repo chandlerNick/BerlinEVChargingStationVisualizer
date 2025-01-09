@@ -10,8 +10,7 @@ from branca.colormap import LinearColormap
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from core.demand_methods.DemandMethods import DemandMethod
-from core.suggestions_methods.SuggestionsMethods import initialize_file, load_suggestions, save_suggestions, clear_suggestions_file
+from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file, load_suggestions
 from core.streamlit_methods.SuggestionsStreamlitMethods import submit_a_suggestion, view_suggestions, clear_suggestions
 from core.streamlit_methods.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
 

@@ -42,7 +42,7 @@ def clear_suggestions_file(password):
 # -----------------------------------------------------------------------
 
 # Function to initialize the JSON file
-def initialize_file():
+def initialize_suggestions_file():
     '''
     Initializes the JSON file if it isn't already
     Input: None
