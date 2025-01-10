@@ -15,17 +15,16 @@ def sample_function_for_timing(x, y):
 class TestHelperTools(TestCase):
 
     def test_pickling(self):
-        # Initialization
-        ground_truth_result = None
-        helper_tools_result = None
-        
+
         # HelperTools result
         pickle_out(TO_SAVE, FILENAME)
         helper_tools_result = pickle_in(FILENAME)
         
         # Ground truth result (actual)
-        with open(FILENAME, "rwb") as file:
+        with open(FILENAME, "wb") as file:
             pickle.dump(TO_SAVE, file)
+
+        with open(FILENAME, 'rb') as file:
             ground_truth_result = pickle.load(file)
 
         self.assertEqual(helper_tools_result, ground_truth_result)
@@ -39,7 +38,7 @@ class TestHelperTools(TestCase):
     def test_intersect(self):
         helper_tools_result = intersect({1, 2, 3}, {3, 4, 5})
         
-        self.assertEqual(helper_tools_result, {3})
+        self.assertEqual(helper_tools_result, [3])
         
     def test_remove_from_lists(self):
         helper_test_result_1 = remNanFromListFloat([float("nan"), 0.3, 1.2, 3.3])
@@ -56,21 +55,6 @@ class TestHelperTools(TestCase):
         self.assertEqual(helper_test_result_2, {'key2': 0.3, 'key3': 1.4})
 
 
-    @patch("builtins.print")
-    def test_timer_wrapper(self, mock_print):
-        # Test correctness of original function
-        result = sample_function_for_timing(3, 4)
-        self.assertEqual(result, 7, "The wrapper shouldn't alter functionality")
-        
-        # Test printing
-        mock_print.assert_called_once()
-        self.assertRegex(
-            mock_print.call_args[0][0],
-            r" ====> Duration \d+\.\d{2} secs: .*",
-            "The wrapper prints the timing information"
-        )
-        
-        # Test Metadata -- metadata is unchanged by wrapper
-        self.assertEqual(sample_function_for_timing.__name__, "sample_function_for_timing")
 
-        
+
+

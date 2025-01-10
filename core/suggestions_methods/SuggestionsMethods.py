@@ -14,14 +14,14 @@ SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/sugges
 
 
 # ----------------------------------------------------------------------
-def overwrite_file():
+def overwrite_file(suggestion_file = SUGGESTIONS_FILE):
     '''
     Writes an empty JSON file to SUGGESTIONS_FILE
     Inputs: None
     Outputs: None
     Postconditions: SUGGESTIONS_FILE is overwritten with an empty array
     '''
-    with open(SUGGESTIONS_FILE, "w") as file:
+    with open(suggestion_file, "w") as file:
         json.dump([], file)  # Create an empty list in the file
 
 
@@ -42,21 +42,22 @@ def clear_suggestions_file(password):
 # -----------------------------------------------------------------------
 
 # Function to initialize the JSON file
-def initialize_suggestions_file():
+def initialize_suggestions_file(suggestions_file = SUGGESTIONS_FILE):
     '''
     Initializes the JSON file if it isn't already
     Input: None
     Output: None
     Postcondition: An empty JSON file, SUGGESTIONS_FILE is created if it doesn't exist
     '''
-    if not Path(SUGGESTIONS_FILE).exists():  # Check if the file exists
-        overwrite_file()
+    print(suggestions_file)
+    if not Path(suggestions_file).exists():  # Check if the file exists
+        overwrite_file(suggestions_file)
 
 
 # -----------------------------------------------------------------------
 
 # Function to load suggestions from the file
-def load_suggestions():
+def load_suggestions(suggestions_file = SUGGESTIONS_FILE):
     '''
     Loads the suggestions from the json file at the specified path
     Input: None
@@ -65,9 +66,9 @@ def load_suggestions():
         - Loaded JSON if the SUGGESTIONS_FILE does exist
     Postconditions: The SUGGESTIONS_FILE is loaded if it exists
     '''
-    initialize_suggestions_file()
-    if Path(SUGGESTIONS_FILE).exists():
-        with open(SUGGESTIONS_FILE, "r") as file:
+    initialize_suggestions_file(suggestions_file)
+    if Path(suggestions_file).exists():
+        with open(suggestions_file, "r") as file:
             return json.load(file)
     return []
 

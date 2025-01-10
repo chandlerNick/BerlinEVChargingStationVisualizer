@@ -2,7 +2,7 @@ import os
 import json
 from pathlib import Path
 from unittest import TestCase
-from core.methods import initialize_file
+from core.methods import initialize_suggestions_file
 from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file, load_suggestions, save_suggestions, SUGGESTIONS_FILE
 
 SUGGESTIONS_FILE = "datasets/suggestions.json"
@@ -15,7 +15,7 @@ class TestInitializeFile(TestCase):
         if Path(SUGGESTIONS_FILE).exists():
             os.remove(SUGGESTIONS_FILE)
 
-        initialize_suggestions_file()
+        initialize_suggestions_file(SUGGESTIONS_FILE)
 
         # Check that the file was created
         self.assertTrue(Path(SUGGESTIONS_FILE).exists())

@@ -2,13 +2,10 @@
 # 06.01.2024
 
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
-import streamlit as st
-from core.methods import make_streamlit_electric_Charging_resid, preprop_lstat, sort_by_plz_add_geometry
+from core.methods import preprop_lstat, sort_by_plz_add_geometry
 import pandas as pd
 import os
 from config import pdict
-import geopandas as gpd
 from geopandas.testing import assert_geodataframe_equal
 
 

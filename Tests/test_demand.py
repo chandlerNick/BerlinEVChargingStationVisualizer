@@ -1,9 +1,9 @@
 import unittest
 # from demand_file import calculate_demand
 import pandas as pd
-from core.demand_methods.DemandMethods import robert_demands
+from core.demand_methods.DemandMethods import DemandMethod
 
-
+dm = DemandMethod()
 
 class TestDemandFunction(unittest.TestCase):
 
@@ -13,14 +13,14 @@ class TestDemandFunction(unittest.TestCase):
         # calculate the demand for several PLZ by hand and assert that it's the same
 
         # PLZ 14109 with 10049 inhabitants and 23 charging stations
-        demand = robert_demands(pd.DataFrame([[23]]), pd.DataFrame([[10049]])).iloc[0,0]
+        demand = dm.robert_demands(pd.DataFrame([[23]]), pd.DataFrame([[10049]])).iloc[0,0]
         actual_demand = -13
 
         self.assertEqual(demand, actual_demand)
 
 
         # PLZ 13125 with 31379 inhabitants and 16 charging stations
-        demand = robert_demands(pd.DataFrame([[16]]), pd.DataFrame([[31379]])).iloc[0, 0]
+        demand = dm.robert_demands(pd.DataFrame([[16]]), pd.DataFrame([[31379]])).iloc[0, 0]
         actual_demand = 15
 
         self.assertEqual(demand, actual_demand)
@@ -30,7 +30,7 @@ class TestDemandFunction(unittest.TestCase):
 
         # Test with 0 charrging stations and 31379 residents - make sure this does compute correctly and does not throw an error
 
-        demand = robert_demands(pd.DataFrame([[0]]), pd.DataFrame([[31379]])).iloc[0, 0]
+        demand = dm.robert_demands(pd.DataFrame([[0]]), pd.DataFrame([[31379]])).iloc[0, 0]
         actual_demand = 31
         self.assertEqual(demand, actual_demand)
 
@@ -39,7 +39,7 @@ class TestDemandFunction(unittest.TestCase):
 
         # Test with 10 charging stations and 0 residents - make sure this does compute correctly and does not throw an error
 
-        demand = robert_demands(pd.DataFrame([[10]]), pd.DataFrame([[0]])).iloc[0, 0]
+        demand = dm.robert_demands(pd.DataFrame([[10]]), pd.DataFrame([[0]])).iloc[0, 0]
         actual_demand = -10
         self.assertEqual(demand, actual_demand)
 
@@ -48,7 +48,7 @@ class TestDemandFunction(unittest.TestCase):
 
         # Make sure an incorrect input leads to an exception
 
-        self.assertRaises(Exception, robert_demands, pd.DataFrame([["10"]]), pd.DataFrame([[0]]))
+        self.assertRaises(Exception, dm.robert_demands, pd.DataFrame([["10"]]), pd.DataFrame([[0]]))
 
     if __name__ == '__main__':
         unittest.main()
