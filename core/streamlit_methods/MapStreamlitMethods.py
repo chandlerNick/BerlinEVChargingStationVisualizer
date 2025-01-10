@@ -77,7 +77,7 @@ def create_demand_layer(df_merged, folium_map):
     demander = DemandMethod()
     
     # Implement Demand
-    df_merged['Demand'] = demander.robert_demands(df_merged['Number'], df_merged['Einwohner'])
+    df_merged['Demand'] = demander.robert_demands(df_merged['Einwohner'], df_merged['Number'])
         
     # Create colormap for demand
     mininmum_demand = df_merged['Demand'].min()
