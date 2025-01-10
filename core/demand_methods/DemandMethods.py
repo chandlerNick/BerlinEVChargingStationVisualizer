@@ -35,6 +35,6 @@ class DemandMethod:
 
         """
 
-        return round(((0.01 * gdf_charging_station_counts) / 10).sub(gdf_residents_preprocessed),0).astype(int)
+        return round(((0.01 * gdf_residents_preprocessed) / 10).sub(gdf_charging_station_counts),0).astype(int)
 
 
