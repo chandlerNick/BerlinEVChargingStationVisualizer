@@ -27,7 +27,7 @@ def overwrite_file(suggestion_file = SUGGESTIONS_FILE):
 
 # ----------------------------------------------------------------------
 
-def clear_suggestions_file(password):
+def clear_suggestions_file(password, suggestions_file = SUGGESTIONS_FILE):
     '''
     If the password matches, we can wipe the suggestions file
     Inputs: password, a string that is input on the streamlit UI
@@ -35,7 +35,7 @@ def clear_suggestions_file(password):
     Postconditions: The SUGGESTIONS_FILE is wiped if the correct password is given 
     '''
     if password == "1234":  # This is the password in plaintext, what are the secure dev practices?
-        overwrite_file()
+        overwrite_file(suggestions_file)
         st.sidebar.info("Password Accepted")
 
 
@@ -77,7 +77,7 @@ def load_suggestions(suggestions_file = SUGGESTIONS_FILE):
 # Function to save suggestions to the file
 
 
-def save_suggestions(suggestions):
+def save_suggestions(suggestions, suggestions_file = SUGGESTIONS_FILE):
     '''
     Save suggestions to the json file at the specified path
     Input: suggestions
@@ -86,5 +86,5 @@ def save_suggestions(suggestions):
         - The file at SUGGESTIONS_FILE is updated via a JSON dump if it exists
         - A file SUGGESTIONS_FILE is created if it doesn't exist
     '''
-    with open(SUGGESTIONS_FILE, "w+") as file:
+    with open(suggestions_file, "w+") as file:
         json.dump(suggestions, file)
