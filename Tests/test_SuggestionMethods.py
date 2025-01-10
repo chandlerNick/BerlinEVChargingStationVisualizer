@@ -5,7 +5,7 @@ from pathlib import Path
 from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file, load_suggestions
 
 
-SUGGESTIONS_FILE = "datasets/suggestions.json"
+SUGGESTIONS_FILE = "Tests/datasets/suggestions.json"
 
 
 class TestSuggestionMethods(unittest.TestCase):
