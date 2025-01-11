@@ -11,8 +11,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file, load_suggestions
-from core.streamlit_methods.SuggestionsStreamlitMethods import submit_a_suggestion, view_suggestions, clear_suggestions
-from core.streamlit_methods.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
+from core.presentation.SuggestionsStreamlitMethods import submit_a_suggestion, view_suggestions, clear_suggestions
+from core.presentation.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
 
 # It works!
 
