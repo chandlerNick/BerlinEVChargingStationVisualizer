@@ -2,7 +2,7 @@ import unittest
 import os
 import json
 from pathlib import Path
-from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file, load_suggestions, save_suggestions, clear_suggestions_file, overwrite_file
+from core.domain.suggestions_methods.SuggestionsMethods import initialize_suggestions_file, load_suggestions, save_suggestions, clear_suggestions_file, overwrite_file
 
 
 SUGGESTIONS_FILE = "Tests/datasets/suggestions.json"

@@ -2,7 +2,9 @@ from unittest import TestCase
 from unittest.mock import patch, call
 import pickle
 import time
-from core.HelperTools import pickle_in, pickle_out, binom, intersect, remNanFromListFloat, remNullItemsFromList, remNanFromDict, remNullItemsFromDict, timer
+from core.infrastructure.HelperTools import pickle_in, pickle_out, binom, \
+    intersect, remNanFromListFloat, remNullItemsFromList, remNanFromDict, \
+    remNullItemsFromDict, timer
 
 FILENAME = "datasets/pickler.pkl"
 TO_SAVE = "This is a string object we will pickle up"

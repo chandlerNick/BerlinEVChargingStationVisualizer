@@ -1,19 +1,14 @@
 import pandas as pd
 import geopandas as gpd
-import core.HelperTools as ht
+import core.infrastructure.HelperTools as ht
 
 import folium
-# from folium.plugins import HeatMap
 import streamlit as st
 from streamlit_folium import folium_static
-from branca.colormap import LinearColormap
-import seaborn as sns
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-from core.suggestions_methods.SuggestionsMethods import \
+from core.domain.suggestions_methods.SuggestionsMethods import \
     initialize_suggestions_file, load_suggestions, SUGGESTIONS_FILE
-from core.presentation.SuggestionsStreamlitMethods import submit_a_suggestion, view_suggestions, clear_suggestions
-from core.presentation.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
+from core.application.presentation.SuggestionsStreamlitMethods import submit_a_suggestion, view_suggestions, clear_suggestions
+from core.application.presentation.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
 
 # It works!
 

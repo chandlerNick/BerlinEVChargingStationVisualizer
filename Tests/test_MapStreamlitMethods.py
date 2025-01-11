@@ -3,7 +3,7 @@ import geopandas as gpd
 import folium
 from shapely.geometry import Polygon
 from branca.colormap import LinearColormap
-from core.presentation.MapStreamlitMethods import create_residents_layer, create_demand_layer, \
+from core.application.presentation.MapStreamlitMethods import create_residents_layer,\
     create_charging_stations_layer
 
 

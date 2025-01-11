@@ -1,7 +1,7 @@
 import unittest
 # from demand_file import calculate_demand
 import pandas as pd
-from core.demand_methods.DemandMethods import DemandMethod
+from core.domain.demand_methods.DemandMethods import DemandMethod
 
 dm = DemandMethod()
 

@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from core.presentation.SuggestionsStreamlitMethods import submit_a_suggestion
+from core.application.presentation.SuggestionsStreamlitMethods import submit_a_suggestion
 
 class TestSubmitSuggestion(unittest.TestCase):
     """Test behaviour for incorrectly submitted postal codes"""

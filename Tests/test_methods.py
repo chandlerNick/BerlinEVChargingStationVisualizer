@@ -1,7 +1,7 @@
 # Tests for the methods.py file
 # 06.01.2024
 from unittest import TestCase
-from core.methods import preprop_lstat, sort_by_plz_add_geometry, \
+from core.infrastructure.methods import preprop_lstat, sort_by_plz_add_geometry, \
     count_plz_occurrences, preprop_resid, \
     merge_geo_dataframes
 import pandas as pd
