@@ -10,7 +10,8 @@ from branca.colormap import LinearColormap
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file, load_suggestions
+from core.suggestions_methods.SuggestionsMethods import \
+    initialize_suggestions_file, load_suggestions, SUGGESTIONS_FILE
 from core.streamlit_methods.SuggestionsStreamlitMethods import submit_a_suggestion, view_suggestions, clear_suggestions
 from core.streamlit_methods.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
 
@@ -140,6 +141,7 @@ def merge_geo_dataframes(df_charging_stations, df_population):
         - df_population: A geodataframe sorted by PLZ and containing information about the population
     Outputs: A merged geodataframe
     '''
+
     # Merge resident and charging station data
     df_charging_stations['PLZ'] = df_charging_stations['PLZ'].astype(int)
     df_charging_stations = df_charging_stations.iloc[:, 0:2]
@@ -153,7 +155,7 @@ def merge_geo_dataframes(df_charging_stations, df_population):
 # -------------------------------------------------------------------------
 
 @ht.timer
-def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
+def make_streamlit_electric_Charging_resid(df_charging_stations, df_population, suggestions_file = SUGGESTIONS_FILE):
     """
     Makes Streamlit App with Heatmap of Electric Charging Stations and Residents
     Inputs: 
@@ -206,11 +208,11 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population):
     
     
     # Call the init file method (creates the file if it doesn't yet exist)
-    initialize_suggestions_file()
+    initialize_suggestions_file(suggestions_file)
     
     # Load suggestions into memory
     if "suggestions" not in st.session_state:
-        st.session_state["suggestions"] = load_suggestions()
+        st.session_state["suggestions"] = load_suggestions(suggestions_file)
 
     # Sidebar menu
     option = st.sidebar.radio("Choose an option:", ["Submit a Suggestion", "View Suggestions", "Clear Suggestions"])
