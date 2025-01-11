@@ -1,15 +1,21 @@
 # Tests for the methods.py file
 # 06.01.2024
-
+import unittest
 from unittest import TestCase
-from core.methods import preprop_lstat, sort_by_plz_add_geometry
+from core.methods import preprop_lstat, sort_by_plz_add_geometry, \
+    count_plz_occurrences, preprop_resid, \
+    merge_geo_dataframes
 import pandas as pd
 import os
 from pandas.testing import assert_frame_equal
 from config import pdict
 from geopandas.testing import assert_geodataframe_equal
-from core.methods import  count_plz_occurrences
+import geopandas as gpd
+from unittest.mock import patch, MagicMock
+from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file
 
+
+SUGGESTIONS_FILE = 'datasets/suggestions.json'
 
 
 class TestMethods(TestCase):
@@ -72,3 +78,84 @@ class TestMethods(TestCase):
 
         result_df = count_plz_occurrences(df)
         assert_frame_equal(result_df, expected_df)
+
+    def setUp(self):
+        """Set up test data for residents and geographic information."""
+
+        # Setup for residents
+        self.dfr = pd.DataFrame({
+            "plz": [10115, 10178, 10435, 9999],
+            "einwohner": [5000, 12000, 8000, 300],
+            "lat": [52.5321, 52.5234, 52.5389, 52.0000],
+            "lon": [13.3849, 13.4105, 13.4287, 13.0000]
+        })
+
+        self.dfg = pd.DataFrame({
+            "PLZ": [10115, 10178, 10435],
+            "geometry": ["POINT(13.3849 52.5321)", "POINT(13.4105 52.5234)", "POINT(13.4287 52.5389)"]
+        })
+
+        self.paramdict = {"geocode": "PLZ"}
+
+        # SetUp for geodata
+        # Sample data for df_population
+        self.df_population = gpd.GeoDataFrame({
+                'PLZ': [10115, 10117, 10119],
+                'Population': [15000, 12000, 18000]
+        })
+
+        # Sample data for df_charging_stations
+        self.df_charging_stations = pd.DataFrame({
+                'PLZ': [10115, 10117],
+                'Number': [10, 5]
+        })
+
+        # Expected output
+        self.expected_output = pd.DataFrame({
+                'PLZ': [10115, 10117, 10119],
+                'Population': [15000, 12000, 18000],
+                'Number': [10.0, 5.0, 0.0]
+        })
+
+
+
+    def test_preprop_resid(self):
+        """Test preprocessing and merging of the DataFrame."""
+        expected_df = gpd.GeoDataFrame({
+            "PLZ": [10115, 10178, 10435],
+            "Einwohner": [5000, 12000, 8000],
+            "Breitengrad": ["52.5321", "52.5234", "52.5389"],
+            "Längengrad": ["13.3849", "13.4105", "13.4287"],
+            "geometry": gpd.GeoSeries.from_wkt([
+                "POINT(13.3849 52.5321)",
+                "POINT(13.4105 52.5234)",
+                "POINT(13.4287 52.5389)"
+            ])
+        }, geometry='geometry')
+
+        result = preprop_resid(self.dfr, self.dfg, self.paramdict)
+
+        pd.testing.assert_frame_equal(result, expected_df)
+
+
+    def test_merge_geo_dataframes(self):
+        result = merge_geo_dataframes(self.df_charging_stations, self.df_population)
+        assert_frame_equal(result, self.expected_output)
+
+    def test_merge_with_empty_charging_stations(self):
+        # Case where df_charging_stations is empty
+        empty_charging_stations = pd.DataFrame(columns=['PLZ', 'Number'])
+        expected_output = pd.DataFrame(self.df_population.copy())
+        expected_output['Number'] = 0
+
+        result = merge_geo_dataframes(empty_charging_stations, self.df_population)
+        assert_frame_equal(result, expected_output)
+
+    def test_merge_with_empty_population(self):
+        # Case where df_population is empty
+        empty_population = pd.DataFrame(columns=['PLZ', 'Population'])
+        expected_output = pd.DataFrame(columns=['PLZ', 'Population', 'Number'])
+        expected_output["Number"] = pd.to_numeric(expected_output["Number"])
+
+        result = merge_geo_dataframes(self.df_charging_stations, empty_population)
+        assert_frame_equal(result, expected_output)
