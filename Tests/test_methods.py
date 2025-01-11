@@ -1,6 +1,5 @@
 # Tests for the methods.py file
 # 06.01.2024
-import unittest
 from unittest import TestCase
 from core.methods import preprop_lstat, sort_by_plz_add_geometry, \
     count_plz_occurrences, preprop_resid, \
@@ -11,8 +10,7 @@ from pandas.testing import assert_frame_equal
 from config import pdict
 from geopandas.testing import assert_geodataframe_equal
 import geopandas as gpd
-from unittest.mock import patch, MagicMock
-from core.suggestions_methods.SuggestionsMethods import initialize_suggestions_file
+
 
 
 SUGGESTIONS_FILE = 'datasets/suggestions.json'
@@ -52,7 +50,7 @@ class TestMethods(TestCase):
 
 
     def test_count_plz_occurences_basic_case(self):
-        # Test with a basic DataFrame containing unique PLZs
+        """ Test with a basic DataFrame containing unique PLZs """
         data = {
                 'PLZ': [10010, 10010, 10020, 10020, 10020, 10030],
                 'geometry': ['geom1', 'geom1', 'geom2', 'geom2', 'geom2',
@@ -70,7 +68,7 @@ class TestMethods(TestCase):
         assert_frame_equal(result_df, expected_df)
 
     def test_count_plz_occurences_empty_dataframe(self):
-        # Test that it doesnt crash with empty df
+        """Test that no error is thrown with an empty df"""
 
         df = pd.DataFrame(columns = ['PLZ', 'geometry'])
         expected_df = pd.DataFrame(columns = ['PLZ', 'Number', 'geometry'])
