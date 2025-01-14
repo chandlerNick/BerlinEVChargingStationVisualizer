@@ -197,8 +197,9 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population, 
 
     
     # ---------------------------------------------------------------------------------------------------------------------
-    # Suggestions section
+    # Suggestions section - Continue debugging after interim submission feedback
     # ---------------------------------------------------------------------------------------------------------------------
+    '''
     VALID_POSTAL_CODES = df_charging_stations_copy['PLZ'].astype(str).tolist()
     
     
@@ -225,3 +226,4 @@ def make_streamlit_electric_Charging_resid(df_charging_stations, df_population, 
         clear_suggestions()
         st.sidebar.empty()
         
+    '''
