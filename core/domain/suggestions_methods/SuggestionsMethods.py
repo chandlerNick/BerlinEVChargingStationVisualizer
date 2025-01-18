@@ -1,8 +1,5 @@
 # Methods associated with the suggestions input
 # 06.01.2025
-
-
-
 import json
 from pathlib import Path
 import os
@@ -34,7 +31,7 @@ def clear_suggestions_file(password, suggestions_file = SUGGESTIONS_FILE):
     Outputs: None
     Postconditions: The SUGGESTIONS_FILE is wiped if the correct password is given 
     '''
-    if password == "1234":  # This is the password in plaintext, what are the secure dev practices?
+    if password == "12345":
         overwrite_file(suggestions_file)
         st.sidebar.info("Password Accepted")
 

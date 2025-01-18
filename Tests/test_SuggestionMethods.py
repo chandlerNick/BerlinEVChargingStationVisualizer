@@ -98,7 +98,7 @@ class TestSuggestionMethods(unittest.TestCase):
         suggestions = ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
         save_suggestions(suggestions, SUGGESTIONS_FILE) # Save mock suggestions
 
-        clear_suggestions_file(password="1234", suggestions_file=SUGGESTIONS_FILE)
+        clear_suggestions_file(password="12345", suggestions_file=SUGGESTIONS_FILE)
         loaded_suggestions = load_suggestions(SUGGESTIONS_FILE)
         self.assertEqual(loaded_suggestions, [])  # Check if file is cleared
 
