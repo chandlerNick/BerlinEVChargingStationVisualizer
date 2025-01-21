@@ -10,7 +10,6 @@ from branca.colormap import LinearColormap
 import geopandas as gpd
 from core.domain.demand_methods.DemandMethods import DemandMethod
 
-@st.cache_resource
 def create_residents_layer(df_population, folium_map):
     '''
     Creates the residents layer
@@ -60,7 +59,6 @@ def write_demand_formula_to_screen(formula, variables):
 
 # ------------------------------------------------------------------------
 
-@st.cache_resource
 def create_demand_layer(df_merged, folium_map):
     '''
     Creates the demand layer
@@ -109,7 +107,6 @@ def create_demand_layer(df_merged, folium_map):
 
 # -----------------------------------------------------------------------
 
-@st.cache_resource
 def create_charging_stations_layer(df_merged, folium_map):
     '''
     Creates the charging stations layer of the map
