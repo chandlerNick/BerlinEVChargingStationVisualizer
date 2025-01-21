@@ -1,6 +1,5 @@
 # Methods associated the map that help deploy the streamlit app
 
-
 import streamlit as st
 import folium
 # from folium.plugins import HeatMap
