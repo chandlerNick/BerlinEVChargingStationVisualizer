@@ -42,6 +42,7 @@ def sort_by_plz_add_geometry(df_register_input, df_geo_input, pdict):
 
 @ht.timer
 @ht.logger_decorator
+@st.cache_data
 def preprop_lstat(dfr, dfg, paramdict):
     """
     Preprocesses DataFrame for Electric Charging Stations and Geographic Information
@@ -97,6 +98,7 @@ def count_plz_occurrences(df_charging_stations_preprocessed):
 
 @ht.timer
 @ht.logger_decorator
+@st.cache_data
 def preprop_resid(dfr, dfg, paramdict):
     """
     Preprocesses DataFrame for Residents and Geographic Information
