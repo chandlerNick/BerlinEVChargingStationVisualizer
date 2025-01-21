@@ -26,7 +26,7 @@ def main():
     # Setup logging
     logging.basicConfig(
         level=logging.INFO, 
-        format='%(asctime)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(levelname)s - %(message)s',
         filename='/mount/src/berlinevchargingstationvisualizer/datasets/app.log'
     )
 
