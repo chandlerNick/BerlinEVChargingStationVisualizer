@@ -1,7 +1,8 @@
 import pandas as pd
 import geopandas as gpd
 import core.infrastructure.HelperTools as ht
-
+import logging
+from functools import wraps
 import folium
 import streamlit as st
 from streamlit_folium import folium_static
@@ -9,8 +10,6 @@ from core.domain.suggestions_methods.SuggestionsMethods import \
     initialize_suggestions_file, load_suggestions, SUGGESTIONS_FILE
 from core.application.presentation.SuggestionsStreamlitMethods import submit_a_suggestion, view_suggestions, clear_suggestions
 from core.application.presentation.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
-
-# It works!
 
 # -----------------------------------------------------------------------
 
@@ -146,6 +145,30 @@ def merge_geo_dataframes(df_charging_stations, df_population):
     df_merged['Number'] = df_merged['Number'].fillna(0)
     
     return df_merged
+
+# -------------------------------------------------------------------------
+
+def logger_decorator(func):
+    '''
+    Creates a logger decorator which logs information about function calls within the codebase
+    Input: A function
+    Output: A wrapper function
+    Postconditions: None
+    '''
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Log function call details
+        logging.info(f"Called {func.__name__} with args: {args}, kwargs: {kwargs}")
+        try:
+            result = func(*args, **kwargs)
+            # Log the result
+            logging.info(f"{func.__name__} returned {result}")
+            return result
+        except Exception as e:
+            # Log any exception that occurs
+            logging.error(f"{func.__name__} raised an exception: {e}")
+            raise
+    return wrapper
 
 # -------------------------------------------------------------------------
 

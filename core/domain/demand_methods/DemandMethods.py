@@ -1,5 +1,5 @@
 # Functions associated with the demand geovisualizer
-# 06.01.2025
+from core.methods import logger_decorator
 
 class DemandMethod:
     
@@ -18,7 +18,7 @@ class DemandMethod:
     """
     
     
-    # Robert's demand function
+    @logger_decorator
     def robert_demands(self, gdf_residents_preprocessed, gdf_charging_station_counts):
         """
         Calculates Charging Station Demand per Postal Code

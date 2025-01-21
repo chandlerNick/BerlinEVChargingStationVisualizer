@@ -1,9 +1,9 @@
 # Methods associated with the suggestions input
-# 06.01.2025
 import json
 from pathlib import Path
 import os
 import streamlit as st
+from core.methods import logger_decorator
 
 
 # Define the path to the suggestions file
@@ -11,6 +11,7 @@ SUGGESTIONS_FILE = "/mount/src/berlinevchargingstationvisualizer/datasets/sugges
 
 
 # ----------------------------------------------------------------------
+@logger_decorator
 def overwrite_file(suggestion_file = SUGGESTIONS_FILE):
     '''
     Writes an empty JSON file to SUGGESTIONS_FILE
@@ -23,7 +24,7 @@ def overwrite_file(suggestion_file = SUGGESTIONS_FILE):
 
 
 # ----------------------------------------------------------------------
-
+@logger_decorator
 def clear_suggestions_file(password, suggestions_file = SUGGESTIONS_FILE):
     '''
     If the password matches, we can wipe the suggestions file
@@ -37,8 +38,7 @@ def clear_suggestions_file(password, suggestions_file = SUGGESTIONS_FILE):
 
 
 # -----------------------------------------------------------------------
-
-# Function to initialize the JSON file
+@logger_decorator
 def initialize_suggestions_file(suggestions_file = SUGGESTIONS_FILE):
     '''
     Initializes the JSON file if it isn't already
@@ -52,8 +52,7 @@ def initialize_suggestions_file(suggestions_file = SUGGESTIONS_FILE):
 
 
 # -----------------------------------------------------------------------
-
-# Function to load suggestions from the file
+@logger_decorator
 def load_suggestions(suggestions_file = SUGGESTIONS_FILE):
     '''
     Loads the suggestions from the json file at the specified path
@@ -71,9 +70,7 @@ def load_suggestions(suggestions_file = SUGGESTIONS_FILE):
 
 
 # -----------------------------------------------------------------------
-# Function to save suggestions to the file
-
-
+@logger_decorator
 def save_suggestions(suggestions, suggestions_file = SUGGESTIONS_FILE):
     '''
     Save suggestions to the json file at the specified path
