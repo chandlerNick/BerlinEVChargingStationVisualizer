@@ -10,7 +10,7 @@ from core.application.presentation.SuggestionsStreamlitMethods import submit_a_s
 from core.application.presentation.MapStreamlitMethods import create_residents_layer, create_demand_layer, create_charging_stations_layer
 
 # -----------------------------------------------------------------------
-
+@ht.logger_decorator
 def sort_by_plz_add_geometry(df_register_input, df_geo_input, pdict):
     '''
     Inputs:
@@ -41,6 +41,7 @@ def sort_by_plz_add_geometry(df_register_input, df_geo_input, pdict):
 
 
 @ht.timer
+@ht.logger_decorator
 def preprop_lstat(dfr, dfg, paramdict):
     """
     Preprocesses DataFrame for Electric Charging Stations and Geographic Information
@@ -74,6 +75,7 @@ def preprop_lstat(dfr, dfg, paramdict):
 
 
 @ht.timer
+@ht.logger_decorator
 def count_plz_occurrences(df_charging_stations_preprocessed):
     """
     Counts Loading Stations Per Postal Code
@@ -94,6 +96,7 @@ def count_plz_occurrences(df_charging_stations_preprocessed):
 
 
 @ht.timer
+@ht.logger_decorator
 def preprop_resid(dfr, dfg, paramdict):
     """
     Preprocesses DataFrame for Residents and Geographic Information
@@ -125,6 +128,7 @@ def preprop_resid(dfr, dfg, paramdict):
 
 # -----------------------------------------------------------------------------
 
+@ht.logger_decorator
 def merge_geo_dataframes(df_charging_stations, df_population):
     '''
     Merges the charging stations and population dataframes and fills NA's with 0
@@ -147,6 +151,7 @@ def merge_geo_dataframes(df_charging_stations, df_population):
 # -------------------------------------------------------------------------
 
 @ht.timer
+@ht.logger_decorator
 def make_streamlit_electric_Charging_resid(df_charging_stations, df_population, suggestions_file = SUGGESTIONS_FILE):
     """
     Makes Streamlit App with Heatmap of Electric Charging Stations and Residents

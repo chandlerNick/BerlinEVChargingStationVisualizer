@@ -12,7 +12,16 @@ TO_SAVE = "This is a string object we will pickle up"
 def sample_function_for_timing(x, y):
     time.sleep(0.1)
 
+# Sample functions to test the decorator
+@logger_decorator
+def add(a, b):
+    return a + b
 
+@logger_decorator
+def divide(a, b):
+    if b == 0:
+        raise ZeroDivisionError("Cannot divide by zero")
+    return a / b
 
 class TestHelperTools(TestCase):
 
@@ -56,7 +65,32 @@ class TestHelperTools(TestCase):
         self.assertEqual(helper_test_result_1, {'key2': 0.3, 'key3': 1.4})
         self.assertEqual(helper_test_result_2, {'key2': 0.3, 'key3': 1.4})
 
+    @patch('logging.info')  # Mock logging.info
+    @patch('logging.error')  # Mock logging.error
+    def test_logger_decorator(self, mock_error, mock_info):
+        # Test add function (no exception)
+        result = add(10, 5)
+        self.assertEqual(result, 15)
 
+        # Verify logging calls for add
+        mock_info.assert_any_call("Called add with args: (10, 5), kwargs: {}")
+        mock_info.assert_any_call("add returned 15")
+
+        # Test divide function (no exception)
+        result = divide(10, 2)
+        self.assertEqual(result, 5)
+
+        # Verify logging calls for divide
+        mock_info.assert_any_call("Called divide with args: (10, 2), kwargs: {}")
+        mock_info.assert_any_call("divide returned 5")
+
+        # Test divide function (exception raised)
+        with self.assertRaises(ZeroDivisionError):
+            divide(10, 0)
+
+        # Verify logging calls for exception
+        mock_info.assert_any_call("Called divide with args: (10, 0), kwargs: {}")
+        mock_error.assert_called_with("divide raised an exception: Cannot divide by zero")
 
 
 
