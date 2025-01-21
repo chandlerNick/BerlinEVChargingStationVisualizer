@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import os
 import streamlit as st
-from infrastructure.methods import logger_decorator
+from core.infrastructre.methods import logger_decorator
 
 
 # Define the path to the suggestions file
