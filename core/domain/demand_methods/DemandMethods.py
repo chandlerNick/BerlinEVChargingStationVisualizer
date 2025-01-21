@@ -1,5 +1,5 @@
 # Functions associated with the demand geovisualizer
-from infrastructure.HelperTools import logger_decorator
+from core.infrastructure.HelperTools import logger_decorator
 
 class DemandMethod:
     
