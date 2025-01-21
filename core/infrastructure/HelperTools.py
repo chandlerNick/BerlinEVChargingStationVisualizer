@@ -2,7 +2,7 @@ import math
 import pandas as pd
 
 import pickle
-
+import logging
 import time    
 import functools   
 import random
@@ -31,7 +31,7 @@ def logger_decorator(func):
     Output: A wrapper function
     Postconditions: None
     '''
-    @wraps(func)
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         # Log function call details
         logging.info(f"Called {func.__name__} with args: {args}, kwargs: {kwargs}")
