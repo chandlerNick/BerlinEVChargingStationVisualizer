@@ -4,7 +4,7 @@ import pickle
 import time
 from core.infrastructure.HelperTools import pickle_in, pickle_out, binom, \
     intersect, remNanFromListFloat, remNullItemsFromList, remNanFromDict, \
-    remNullItemsFromDict, timer
+    remNullItemsFromDict, timer, logger_decorator
 
 FILENAME = "datasets/pickler.pkl"
 TO_SAVE = "This is a string object we will pickle up"
@@ -82,7 +82,7 @@ class TestHelperTools(TestCase):
 
         # Verify logging calls for divide
         mock_info.assert_any_call("Called divide with args: (10, 2), kwargs: {}")
-        mock_info.assert_any_call("divide returned 5")
+        mock_info.assert_any_call("divide returned 5.0")
 
         # Test divide function (exception raised)
         with self.assertRaises(ZeroDivisionError):
