@@ -148,30 +148,6 @@ def merge_geo_dataframes(df_charging_stations, df_population):
 
 # -------------------------------------------------------------------------
 
-def logger_decorator(func):
-    '''
-    Creates a logger decorator which logs information about function calls within the codebase
-    Input: A function
-    Output: A wrapper function
-    Postconditions: None
-    '''
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Log function call details
-        logging.info(f"Called {func.__name__} with args: {args}, kwargs: {kwargs}")
-        try:
-            result = func(*args, **kwargs)
-            # Log the result
-            logging.info(f"{func.__name__} returned {result}")
-            return result
-        except Exception as e:
-            # Log any exception that occurs
-            logging.error(f"{func.__name__} raised an exception: {e}")
-            raise
-    return wrapper
-
-# -------------------------------------------------------------------------
-
 @ht.timer
 def make_streamlit_electric_Charging_resid(df_charging_stations, df_population, suggestions_file = SUGGESTIONS_FILE):
     """

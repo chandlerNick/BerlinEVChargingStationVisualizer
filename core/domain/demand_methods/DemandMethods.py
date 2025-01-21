@@ -1,5 +1,5 @@
 # Functions associated with the demand geovisualizer
-from infrastructure.methods import logger_decorator
+from infrastructure.HelperTools import logger_decorator
 
 class DemandMethod:
     
@@ -34,7 +34,6 @@ class DemandMethod:
         CS = Charging Stations that already exist in the postal code area
 
         """
-
         return round(((0.01 * gdf_residents_preprocessed) / 10).sub(gdf_charging_station_counts),0).astype(int)
 
 
