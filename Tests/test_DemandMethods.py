@@ -50,5 +50,21 @@ class TestDemandFunction(unittest.TestCase):
 
         self.assertRaises(Exception, dm.robert_demands, pd.DataFrame([["10"]]), pd.DataFrame([[0]]))
 
-    if __name__ == '__main__':
-        unittest.main()
+
+    def test_demand_residents_negative_input(self):
+
+        # Make sure a negative input value for residents leads to an exception
+
+        self.assertRaises(ValueError, dm.robert_demands, pd.DataFrame([[-10]]), pd.DataFrame([[10]]))
+
+
+    def test_demand_cs_negative_input(self):
+
+        # Make sure a negative input value for number of stations leads to an exception
+
+        self.assertRaises(ValueError, dm.robert_demands, pd.DataFrame([[10]]), pd.DataFrame([[-10]]))
+
+
+
+if __name__ == '__main__':
+    unittest.main()

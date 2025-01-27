@@ -34,6 +34,11 @@ class DemandMethod:
         CS = Charging Stations that already exist in the postal code area
 
         """
+        # Check if the input values are correct
+        if (gdf_residents_preprocessed < 0).any().any() or (gdf_charging_station_counts < 0).any().any():
+            raise ValueError("Incorrect input value: The number of residents and the number of "
+                             "charging stations must be be non-negative.")
+
         return round(((0.01 * gdf_residents_preprocessed) / 10).sub(gdf_charging_station_counts),0).astype(int)
 
 
